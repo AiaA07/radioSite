@@ -1,0 +1,8 @@
+{
+  "pipeline": "/animated-website",
+  "generatedAt": "2026-04-19T10:00:00Z",
+  "briefSource": "arguments",
+  "mcp": { "stitch": "skipped", "firecrawl": "skipped", "magic": "skipped" },
+  "skills": { "brand": "fired", "ui-ux-pro-max": "fired", "design-system": "fired", "design": "fired", "ui-styling": "fired", "nano-banana-2": "skipped" },
+  "images": { "hero": "tier-3", "episodes": "tier-3", "about": "tier-3", "features": "tier-3", "contact": "tier-3", "schedule": "tier-3", "archive": "tier-3" }
+}

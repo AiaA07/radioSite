@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Forma — design at full volume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0D0519; font-family: 'Syne', sans-serif; color: #F5E642; }
+
+    #c {
+      position: fixed; inset: 0; display: block;
+      opacity: 0; transition: opacity 1.8s ease;
+    }
+    #c.ready { opacity: 1; }
+
+    /* normal cursor everywhere */
+    body { cursor: default; }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; pointer-events: none;
+    }
+    .hud-logo {
+      font-size: .72rem; font-weight: 800; letter-spacing: .22em;
+      text-transform: uppercase; display: flex; align-items: center; gap: .5rem;
+    }
+    .hud-dot {
+      width: 7px; height: 7px; background: #F5E642; border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.15;transform:scale(.4)} }
+    .hud-hint {
+      font-size: .6rem; font-weight: 600; letter-spacing: .18em;
+      text-transform: uppercase; opacity: .38;
+    }
+
+    /* ── TOOLTIP ── */
+    #tip {
+      position: fixed; z-index: 200; pointer-events: none;
+      padding: .45rem .95rem;
+      background: #F5E642; color: #1A0A2E;
+      font-size: .64rem; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase;
+      transform: translate(-50%, -160%);
+      white-space: nowrap; opacity: 0; transition: opacity .12s;
+    }
+    #tip.on { opacity: 1; }
+    #tip::after {
+      content: ''; position: absolute; bottom: -6px; left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-bottom: none; border-top-color: #F5E642;
+    }
+
+    /* ── OVERLAY ── */
+    #ov { position: fixed; inset: 0; z-index: 260; display: none; }
+    #ov.on { display: block; }
+
+    /* ── PANEL ── */
+    #panel {
+      position: fixed; top: 0; right: 0;
+      width: min(500px,100vw); height: 100vh;
+      z-index: 300; background: #0D0519;
+      border-left: 2px solid #F5E642;
+      transform: translateX(100%);
+      transition: transform .45s cubic-bezier(.16,1,.3,1);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    #panel.open { transform: translateX(0); }
+    .ph {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 2rem; border-bottom: 1px solid rgba(245,230,66,.14);
+      flex-shrink: 0;
+    }
+    .ptitle { font-size: .75rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+    .pclose {
+      background: none; border: none; color: #F5E642; cursor: pointer;
+      font-size: 1.3rem; line-height: 1; opacity: .55;
+      transition: opacity .15s, transform .15s; font-family: 'Syne', sans-serif;
+    }
+    .pclose:hover { opacity: 1; transform: rotate(90deg); }
+    .pb {
+      flex: 1; overflow-y: auto; padding: 2rem;
+      scrollbar-width: thin; scrollbar-color: #F5E642 transparent;
+    }
+    .pb::-webkit-scrollbar { width: 3px; }
+    .pb::-webkit-scrollbar-thumb { background: #F5E642; }
+
+    /* ── PANEL CONTENT ── */
+    .hp h2 { font-size: clamp(2.2rem,7vw,4rem); font-weight:800; line-height:.88; letter-spacing:-.02em; margin-bottom:.8rem; }
+    .hp h2 span { -webkit-text-stroke:2px #F5E642; color:transparent; display:block; }
+    .hp .tg { font-size:.85rem; letter-spacing:.3em; text-transform:lowercase; opacity:.55; margin-bottom:1.8rem; }
+    .pbtn {
+      display:inline-flex; align-items:center; gap:.7rem;
+      padding:.8rem 1.6rem; background:#F5E642; color:#1A0A2E;
+      font-weight:800; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+      border:2px solid #F5E642; transition:background .2s,color .2s;
+      cursor:pointer; font-family:'Syne',sans-serif;
+    }
+    .pbtn:hover { background:transparent; color:#F5E642; }
+    .abihead { font-size:.95rem; line-height:1.65; opacity:.85; margin-bottom:2.2rem; font-weight:600; }
+    .hcs { display:flex; flex-direction:column; gap:1.8rem; }
+    .hc  { display:flex; gap:1.1rem; align-items:flex-start; }
+    .hav {
+      width:66px; height:66px; border-radius:2px; flex-shrink:0;
+      background:#2D1554; border:2px solid #F5E642;
+      display:flex; align-items:center; justify-content:center; font-size:1.8rem;
+    }
+    .hn { font-size:.8rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.35rem; }
+    .hb { font-size:.78rem; line-height:1.6; opacity:.72; }
+    .epl { display:flex; flex-direction:column; gap:1px; }
+    .epc {
+      padding:1rem 0; border-bottom:1px solid rgba(245,230,66,.1);
+      cursor:pointer; transition:padding-left .2s;
+      display:flex; align-items:flex-start; gap:.9rem;
+    }
+    .epc:hover { padding-left:.45rem; }
+    .epn { font-size:.6rem; font-weight:800; letter-spacing:.15em; opacity:.3; padding-top:.1rem; min-width:28px; }
+    .epi { flex:1; }
+    .ept { font-size:.84rem; font-weight:700; margin-bottom:.25rem; line-height:1.3; }
+    .epm { font-size:.65rem; letter-spacing:.1em; opacity:.4; text-transform:uppercase; }
+    .epb {
+      width:30px; height:30px; background:#F5E642; color:#1A0A2E;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:50%; flex-shrink:0; transition:transform .15s;
+    }
+    .epc:hover .epb { transform:scale(1.15); }
+    .igg { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin-bottom:1.4rem; }
+    .igp {
+      aspect-ratio:1; background:#2D1554; border:1px solid rgba(245,230,66,.08);
+      display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+      cursor:pointer; transition:border-color .18s,transform .18s;
+      overflow:hidden; position:relative;
+    }
+    .igp:hover { border-color:#F5E642; transform:scale(1.03); z-index:1; }
+    .igo {
+      position:absolute; inset:0; background:rgba(26,10,46,.7);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .18s; font-size:.65rem; font-weight:800; letter-spacing:.1em;
+    }
+    .igp:hover .igo { opacity:1; }
+    .wbh { font-size:.72rem; font-weight:800; letter-spacing:.2em; text-transform:uppercase; opacity:.45; margin-bottom:1.4rem; }
+    #cwrap { border:2px solid rgba(245,230,66,.25); cursor:crosshair; background:#1A0A2E; }
+    #dc { display:block; width:100%; touch-action:none; }
+    .wbt { display:flex; gap:.4rem; margin-top:.9rem; flex-wrap:wrap; align-items:center; }
+    .wbb {
+      padding:.35rem .8rem; background:none; border:1px solid rgba(245,230,66,.28);
+      color:#F5E642; font-family:'Syne',sans-serif; font-size:.65rem; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase; cursor:pointer; transition:background .15s,border-color .15s;
+    }
+    .wbb:hover,.wbb.act { background:#F5E642; color:#1A0A2E; border-color:#F5E642; }
+    .csw {
+      width:26px; height:26px; border:2px solid transparent; cursor:pointer;
+      transition:border-color .15s,transform .15s;
+    }
+    .csw:hover,.csw.act { border-color:#F5E642; transform:scale(1.15); }
+    .cpl { font-size:.95rem; font-weight:700; margin-bottom:1.8rem; opacity:.85; line-height:1.6; }
+    .cpa { color:#F5E642; text-decoration:none; border-bottom:1px solid #F5E642; transition:opacity .15s; }
+    .cpa:hover { opacity:.6; }
+    .sr {
+      display:flex; align-items:center; gap:.9rem; font-size:.72rem; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase; opacity:.55; transition:opacity .15s;
+      cursor:pointer; margin-bottom:.65rem;
+    }
+    .sr:hover { opacity:1; }
+    .si {
+      width:34px; height:34px; background:#2D1554; border:1px solid rgba(245,230,66,.18);
+      display:flex; align-items:center; justify-content:center; font-size:.95rem;
+    }
+
+    /* ripple */
+    .rpl {
+      position:fixed; pointer-events:none;
+      width:38px; height:38px; margin:-19px 0 0 -19px;
+      border:2px solid #F5E642; border-radius:50%;
+      animation:rout .5s ease forwards; z-index:9999;
+    }
+    @keyframes rout { from{transform:scale(0);opacity:1} to{transform:scale(3.2);opacity:0} }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="hud">
+    <div class="hud-logo"><div class="hud-dot"></div>Radio Forma</div>
+    <div class="hud-hint">Move to look &nbsp;·&nbsp; Click objects to explore</div>
+  </div>
+
+  <div id="tip"></div>
+  <div id="ov"></div>
+
+  <div id="panel">
+    <div class="ph">
+      <span class="ptitle" id="ptitle">—</span>
+      <button class="pclose" id="pclose">✕</button>
+    </div>
+    <div class="pb" id="pb"></div>
+  </div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+const interactives = [];
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2(-9, -9);
+let hovered = null;
+let panelOpen = false;
+let targetYaw = 0, targetPitch = 0;
+let curYaw = 0, curPitch = 0;
+let introT = 0;
+let neonFrontMat, tvScreenMat, mainLight;
+
+// ═══════════════════════════════════════════════════════════
+//  WAIT FOR FONTS THEN INIT
+// ═══════════════════════════════════════════════════════════
+document.fonts.ready.then(init);
+
+function init() {
+  // ── RENDERER ──────────────────────────────────────────
+  const canvas = document.getElementById('c');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0; // starts dark, fades in
+
+  // ── SCENE ─────────────────────────────────────────────
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x120620);
+  scene.fog = new THREE.Fog(0x120620, 18, 35);
+
+  // ── CAMERA ────────────────────────────────────────────
+  const camera = new THREE.PerspectiveCamera(65, innerWidth / innerHeight, 0.1, 50);
+  camera.rotation.order = 'YXZ';
+  // Standing inside the room at eye level, aim at the centre of the back wall
+  camera.position.set(0, 7.0, 8);
+  camera.lookAt(0, 5.0, -9);
+  // Capture these as permanent base angles so look-around adds on top of them
+  const BASE_YAW   = camera.rotation.y; // should be ~0
+  const BASE_PITCH = camera.rotation.x; // slight upward tilt baked in
+
+  // ── RESIZE ────────────────────────────────────────────
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  LIGHTING
+  // ═══════════════════════════════════════════════════════
+  // Soft purple-tinted ambient — enough to see everything, no pitch black
+  scene.add(new THREE.AmbientLight(0x7755BB, 2.8));
+
+  // Main overhead pendant — warm incandescent
+  mainLight = new THREE.PointLight(0xFFD98A, 5.5, 28, 1.6);
+  mainLight.position.set(0, 8.6, -1);
+  mainLight.castShadow = true;
+  mainLight.shadow.mapSize.set(2048, 2048);
+  mainLight.shadow.radius = 2;
+  scene.add(mainLight);
+
+  // Second pendant toward front of room
+  const frontLight = new THREE.PointLight(0xFFCC77, 3.5, 20, 1.6);
+  frontLight.position.set(0, 8.6, 4);
+  frontLight.castShadow = false;
+  scene.add(frontLight);
+
+  // Window — cool daylight coming from left wall
+  const windowLight = new THREE.SpotLight(0xCCDDFF, 6.0, 24, Math.PI / 5, 0.35, 1.5);
+  windowLight.position.set(-9, 7, -5);
+  windowLight.target.position.set(0, 2, -2);
+  windowLight.castShadow = true;
+  windowLight.shadow.mapSize.set(1024, 1024);
+  scene.add(windowLight);
+  scene.add(windowLight.target);
+
+  // Neon sign warm bounce on back wall
+  const neonGlow = new THREE.PointLight(0xF5E642, 1.8, 10, 1.8);
+  neonGlow.position.set(0, 7.2, -8);
+  scene.add(neonGlow);
+
+  // Floor lamp warm fill
+  const lampFill = new THREE.PointLight(0xFFAA44, 2.0, 9, 2);
+  lampFill.position.set(6.5, 5.5, 3);
+  scene.add(lampFill);
+
+  // ═══════════════════════════════════════════════════════
+  //  ROOM GEOMETRY
+  // ═══════════════════════════════════════════════════════
+  const RW = 20, RH = 9, RD = 20;
+
+  // ── Wall texture — painted plaster with subtle variation ──
+  const wallCV = document.createElement('canvas'); wallCV.width = 512; wallCV.height = 512;
+  { const c = wallCV.getContext('2d');
+    c.fillStyle = '#2A0D58'; c.fillRect(0,0,512,512);
+    for (let i=0;i<120;i++) {
+      c.fillStyle = `rgba(${40+Math.random()*30},${5+Math.random()*8},${80+Math.random()*30},0.06)`;
+      c.fillRect(Math.random()*512,Math.random()*512,Math.random()*90+10,Math.random()*30+4);
+    }
+    // subtle horizontal brushstroke lines
+    for (let y=0;y<512;y+=6) {
+      c.strokeStyle=`rgba(255,255,255,${0.01+Math.random()*0.015})`;
+      c.lineWidth=1; c.beginPath(); c.moveTo(0,y+Math.random()*2); c.lineTo(512,y+Math.random()*2); c.stroke();
+    }
+  }
+  const wallTex = new THREE.CanvasTexture(wallCV);
+  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+  wallTex.repeat.set(3, 1.5);
+
+  // ── Floor texture — dark hardwood planks ──
+  const floorCV = document.createElement('canvas'); floorCV.width = 1024; floorCV.height = 1024;
+  { const c = floorCV.getContext('2d');
+    const planks = ['#18082E','#1D0A36','#150727','#1B0932','#17082C','#1C0A34'];
+    const pH = 1024/8;
+    planks.forEach((col,i) => {
+      for(let row=0;row<8;row++) {
+        c.fillStyle = planks[(row+i)%planks.length];
+        c.fillRect(0, row*pH, 1024, pH);
+        // wood grain lines
+        c.strokeStyle='rgba(0,0,0,0.12)'; c.lineWidth=1;
+        for(let g=1;g<6;g++){
+          c.beginPath();
+          c.moveTo(0, row*pH+g*(pH/6));
+          c.bezierCurveTo(300, row*pH+g*(pH/6)+Math.random()*4-2,
+                           700, row*pH+g*(pH/6)+Math.random()*4-2,
+                           1024, row*pH+g*(pH/6));
+          c.stroke();
+        }
+        // plank joint
+        c.strokeStyle='rgba(0,0,0,0.35)'; c.lineWidth=2;
+        c.beginPath(); c.moveTo(0,(row+1)*pH); c.lineTo(1024,(row+1)*pH); c.stroke();
+      }
+    });
+  }
+  const floorTex = new THREE.CanvasTexture(floorCV);
+  floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
+  floorTex.repeat.set(5, 5);
+
+  const wallMat  = new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.88, metalness: 0.04 });
+  const floorMat = new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.72, metalness: 0.08 });
+  const ceilMat  = new THREE.MeshStandardMaterial({ color: 0x180530, roughness: 0.95 });
+
+  function addWall(w, h, pos, rotY = 0, mat = wallMat) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+    m.position.set(...pos);
+    m.rotation.y = rotY;
+    m.receiveShadow = true;
+    scene.add(m);
+    return m;
+  }
+
+  // Floor
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // Ceiling
+  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), ceilMat);
+  ceil.rotation.x = Math.PI / 2;
+  ceil.position.y = RH;
+  scene.add(ceil);
+
+  addWall(RW, RH, [0, RH/2, -RD/2]);              // back
+  addWall(RD, RH, [-RW/2, RH/2, 0], Math.PI/2);  // left
+  addWall(RD, RH, [RW/2, RH/2, 0], -Math.PI/2);  // right
+
+  // ── Baseboard trim along all walls ──
+  const trimMat = new THREE.MeshStandardMaterial({ color: 0x3D1A70, roughness: 0.7, metalness: 0.1 });
+  [ // [width, height, depth, x, y, z, rotY]
+    [RW, 0.18, 0.1,  0,    0.09, -RD/2+0.06, 0],       // back
+    [RD, 0.18, 0.1,  -RW/2+0.06, 0.09, 0, Math.PI/2],  // left
+    [RD, 0.18, 0.1,   RW/2-0.06, 0.09, 0, Math.PI/2],  // right
+  ].forEach(([w,h,d,x,y,z,ry]) => {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), trimMat);
+    b.position.set(x,y,z); b.rotation.y = ry; scene.add(b);
+  });
+
+  // ── Ceiling cornice moulding ──
+  const cornMat = new THREE.MeshStandardMaterial({ color: 0x3A1568, roughness: 0.8 });
+  [
+    [RW, 0.22, 0.12, 0, RH-0.11, -RD/2+0.07, 0],
+    [RD, 0.22, 0.12, -RW/2+0.07, RH-0.11, 0, Math.PI/2],
+    [RD, 0.22, 0.12,  RW/2-0.07, RH-0.11, 0, Math.PI/2],
+  ].forEach(([w,h,d,x,y,z,ry]) => {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), cornMat);
+    c.position.set(x,y,z); c.rotation.y = ry; scene.add(c);
+  });
+
+  // ── Window on left wall — with frame and light shaft ──
+  const winFrameMat = new THREE.MeshStandardMaterial({ color: 0x4A2080, roughness: 0.6, metalness: 0.2 });
+  // Outer frame
+  const winFrame = new THREE.Mesh(new THREE.BoxGeometry(0.15, 3.4, 2.6), winFrameMat);
+  winFrame.position.set(-RW/2+0.09, 6, -5);
+  scene.add(winFrame);
+  // Window glass (semi-transparent emissive glow)
+  const winGlass = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.2, 3.0),
+    new THREE.MeshStandardMaterial({
+      color: 0xAABBFF, emissive: new THREE.Color(0x8899EE),
+      emissiveIntensity: 0.6, transparent: true, opacity: 0.22,
+      side: THREE.DoubleSide, roughness: 0.1
+    })
+  );
+  winGlass.rotation.y = Math.PI/2;
+  winGlass.position.set(-RW/2+0.12, 6, -5);
+  scene.add(winGlass);
+  // Window cross-bars
+  const barMat = new THREE.MeshStandardMaterial({ color: 0x4A2080, roughness: 0.6 });
+  const hBar = new THREE.Mesh(new THREE.BoxGeometry(0.1, 3.2, 0.08), barMat);
+  hBar.rotation.y = Math.PI/2; hBar.position.set(-RW/2+0.1, 6, -5);
+  scene.add(hBar);
+  const vBar = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 2.4), barMat);
+  vBar.rotation.y = Math.PI/2; vBar.position.set(-RW/2+0.1, 6, -5);
+  scene.add(vBar);
+  // Light shaft from window (visible fog beam)
+  const shaftGeo = new THREE.ConeGeometry(1.4, 7, 8, 1, true);
+  const shaftMat = new THREE.MeshBasicMaterial({
+    color: 0xCCDDFF, transparent: true, opacity: 0.04,
+    side: THREE.DoubleSide, depthWrite: false
+  });
+  const shaft = new THREE.Mesh(shaftGeo, shaftMat);
+  shaft.rotation.z = -Math.PI/2;
+  shaft.position.set(-6, 6, -5);
+  scene.add(shaft);
+
+  // Ceiling lamp
+  const lampMat = new THREE.MeshStandardMaterial({ color: 0xF5E642, emissive: new THREE.Color(0xF5E642), emissiveIntensity: 3 });
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 10), lampMat);
+  lamp.position.set(0, 8.75, -2);
+  scene.add(lamp);
+  const cord = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.018, 0.018, 0.9, 5),
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E })
+  );
+  cord.position.set(0, 9.2, -2);
+  scene.add(cord);
+
+  // Rug — brighter concentric rings
+  const rugOuter = new THREE.Mesh(
+    new THREE.CylinderGeometry(3.4, 3.4, 0.04, 48),
+    new THREE.MeshStandardMaterial({ color: 0x5522AA, roughness: 1 })
+  );
+  rugOuter.position.set(0, 0.02, 3);
+  scene.add(rugOuter);
+  const rugMid = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.5, 2.5, 0.045, 48),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: 1 })
+  );
+  rugMid.position.set(0, 0.022, 3);
+  scene.add(rugMid);
+  const rugInner = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.5, 1.5, 0.05, 48),
+    new THREE.MeshStandardMaterial({ color: 0x7733DD, roughness: 1 })
+  );
+  rugInner.position.set(0, 0.024, 3);
+  scene.add(rugInner);
+
+  // Central desk
+  const deskMat = new THREE.MeshStandardMaterial({ color: 0x2D1554, roughness: 0.7 });
+  const legMat  = new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: 0.9 });
+  const deskTop = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.1, 1.6), deskMat);
+  deskTop.position.set(0, 1.15, -6);
+  deskTop.castShadow = true;
+  scene.add(deskTop);
+  [[-1.6, -0.7],[1.6, -0.7]].forEach(([x, z]) => {
+    [-0.65, 0.65].forEach(dz => {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.2, 0.09), legMat);
+      leg.position.set(x, 0.6, z + dz - 6);
+      scene.add(leg);
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  DECORATIVE BACKGROUND OBJECTS
+  // ═══════════════════════════════════════════════════════
+
+  // ── Subtle yellow neon strip — back wall only, above neon sign ──
+  const stripMat = new THREE.MeshStandardMaterial({
+    color: 0xF5E642, emissive: new THREE.Color(0xF5E642), emissiveIntensity: 1.2
+  });
+  const strip = new THREE.Mesh(new THREE.BoxGeometry(6.5, 0.06, 0.04), stripMat);
+  strip.position.set(0, RH - 0.35, -RD/2 + 0.05);
+  scene.add(strip);
+
+  // ── Bookshelf — back wall right side ──
+  const shelfMatW = new THREE.MeshStandardMaterial({ color: 0x3D1F6E, roughness: 0.75 });
+  const shelfUnit = new THREE.Group();
+  // uprights
+  [-1.1, 1.1].forEach(x => {
+    const upright = new THREE.Mesh(new THREE.BoxGeometry(0.1, 4.2, 0.45), shelfMatW);
+    upright.position.set(x, 0, 0);
+    shelfUnit.add(upright);
+  });
+  // shelves
+  [-1.6, -0.5, 0.6, 1.7].forEach(y => {
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.08, 0.45), shelfMatW);
+    shelf.position.set(0, y, 0);
+    shelfUnit.add(shelf);
+  });
+  // colourful books
+  const bookColors = [0xF5E642, 0xFF4477, 0x44AAFF, 0xFF8833, 0x66FF88, 0xBB44FF, 0xFF3333, 0xFFDD00, 0x44FFEE];
+  let bookX = -0.95;
+  [-1.2, -0.1, 0.95].forEach(shelfY => {
+    bookX = -0.9;
+    bookColors.forEach((c, i) => {
+      if (i > 5) return;
+      const bw = 0.09 + Math.random() * 0.06;
+      const bh = 0.3 + Math.random() * 0.18;
+      const book = new THREE.Mesh(
+        new THREE.BoxGeometry(bw, bh, 0.32),
+        new THREE.MeshStandardMaterial({ color: c, roughness: 0.7 })
+      );
+      book.position.set(bookX + bw/2, shelfY + 0.04 + bh/2, 0);
+      bookX += bw + 0.015;
+      shelfUnit.add(book);
+    });
+  });
+  shelfUnit.position.set(4.5, 2.3, -9.7);
+  scene.add(shelfUnit);
+
+  // ── Wall clock — back wall left, between poster and neon ──
+  const clockGroup = new THREE.Group();
+  const clockFace = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.7, 0.7, 0.08, 32),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: 0.4 })
+  );
+  clockFace.rotation.x = Math.PI/2;
+  const clockInner = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.6, 0.6, 0.09, 32),
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: 0.6 })
+  );
+  clockInner.rotation.x = Math.PI/2;
+  clockInner.position.z = 0.01;
+  // Hour hand
+  const hourHand = new THREE.Mesh(
+    new THREE.BoxGeometry(0.05, 0.35, 0.03),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642 })
+  );
+  hourHand.position.set(0.08, 0.175, 0.08);
+  hourHand.rotation.z = -0.8;
+  // Minute hand
+  const minHand = new THREE.Mesh(
+    new THREE.BoxGeometry(0.035, 0.48, 0.03),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642 })
+  );
+  minHand.position.set(-0.04, 0.24, 0.08);
+  minHand.rotation.z = 0.3;
+  clockGroup.add(clockFace, clockInner, hourHand, minHand);
+  clockGroup.position.set(-1.8, 6.5, -9.88);
+  scene.add(clockGroup);
+
+  // ── Extra pendant lights hanging from ceiling ──
+  const pendantPositions = [[-5, -3], [5, -3], [-5, 2], [5, 2]];
+  const pendantMat = new THREE.MeshStandardMaterial({ color: 0x3A1568, roughness: 0.6, metalness: 0.4 });
+  const bulbMat   = new THREE.MeshStandardMaterial({ color: 0xFFE8A0, emissive: new THREE.Color(0xFFDD88), emissiveIntensity: 2.5 });
+  const floaters  = []; // kept for animate loop compat
+  pendantPositions.forEach(([px, pz]) => {
+    const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.2, 5), pendantMat);
+    cord.position.set(px, RH - 0.65, pz);
+    scene.add(cord);
+    const shade = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.4, 12, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0x3A1568, roughness: 0.5, metalness: 0.3, side: THREE.DoubleSide }));
+    shade.position.set(px, RH - 1.5, pz);
+    scene.add(shade);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), bulbMat);
+    bulb.position.set(px, RH - 1.25, pz);
+    scene.add(bulb);
+    // Small point light per pendant
+    const pl = new THREE.PointLight(0xFFCC77, 1.2, 8, 2);
+    pl.position.set(px, RH - 1.4, pz);
+    scene.add(pl);
+  });
+
+  // ── Plant in left back corner ──
+  const potMat = new THREE.MeshStandardMaterial({ color: 0xFF8833, roughness: 0.7 });
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.45, 12), potMat);
+  pot.position.set(-8.5, 0.225, -8.5);
+  scene.add(pot);
+  const stemMat = new THREE.MeshStandardMaterial({ color: 0x44BB66, roughness: 0.9 });
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 7), stemMat);
+  stem.position.set(-8.5, 0.95, -8.5);
+  scene.add(stem);
+  // Leaves (flat planes)
+  [[0.5, 0.4, 0.3], [-0.5, 0.3, 0.1], [0.1, 0.5, -0.4]].forEach(([lx, ly, lz]) => {
+    const leaf = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 6, 4),
+      new THREE.MeshStandardMaterial({ color: 0x55CC77, roughness: 0.9 })
+    );
+    leaf.scale.set(1, 0.5, 0.7);
+    leaf.position.set(-8.5 + lx, 1.3 + ly * 0.3, -8.5 + lz);
+    scene.add(leaf);
+  });
+
+  // ── Second plant — right corner ──
+  const pot2 = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.16, 0.36, 10),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: 0.7 }));
+  pot2.position.set(8.2, 0.18, -8.8);
+  scene.add(pot2);
+  const cactus = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.85, 8),
+    new THREE.MeshStandardMaterial({ color: 0x44BB55, roughness: 0.9 }));
+  cactus.position.set(8.2, 0.79, -8.8);
+  scene.add(cactus);
+  // cactus arms
+  [[-0.3, 0.5, 0], [0.3, 0.4, 0]].forEach(([ax, ay, az]) => {
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.45, 6),
+      new THREE.MeshStandardMaterial({ color: 0x44BB55, roughness: 0.9 }));
+    arm.rotation.z = ax > 0 ? 1.2 : -1.2;
+    arm.position.set(8.2 + ax, 0.79 + ay, -8.8 + az);
+    scene.add(arm);
+  });
+
+  // ── Vinyl record crates on the floor — left of desk ──
+  const crateColors = [0x3D1F6E, 0x2D1554, 0x44228A];
+  crateColors.forEach((c, i) => {
+    const crate = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.65, 0.65),
+      new THREE.MeshStandardMaterial({ color: c, roughness: 0.85 }));
+    crate.position.set(-2.2 + i*0.02, 0.325, -5.5 + i*0.02);
+    scene.add(crate);
+    // records sticking out
+    for (let r = 0; r < 5; r++) {
+      const rec = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.02, 20),
+        new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }));
+      rec.rotation.z = Math.PI/2;
+      rec.position.set(-2.05 + r*0.07, 0.55, -5.5);
+      scene.add(rec);
+    }
+  });
+
+  // ── Decorative wall art panel — right of neon, back wall ──
+  const artTex = (() => {
+    const cv = document.createElement('canvas'); cv.width = 256; cv.height = 256;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#2D1554'; ctx.fillRect(0,0,256,256);
+    // geometric pattern
+    const cols = ['#F5E642','#BB44FF','#44AAFF','#FF8833'];
+    for (let i = 0; i < 12; i++) {
+      ctx.strokeStyle = cols[i%4];
+      ctx.lineWidth = 2.5;
+      const r = 20 + i * 9;
+      ctx.beginPath(); ctx.arc(128, 128, r, 0, Math.PI*2); ctx.stroke();
+    }
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(30,30); ctx.lineTo(226,226); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(226,30); ctx.lineTo(30,226); ctx.stroke();
+    return new THREE.CanvasTexture(cv);
+  })();
+  const artPanel = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.6, 1.6),
+    new THREE.MeshStandardMaterial({ map: artTex, emissiveMap: artTex, emissive: new THREE.Color(0x553388), emissiveIntensity: 0.4 })
+  );
+  artPanel.position.set(2.5, 5.5, -9.87);
+  scene.add(artPanel);
+
+  // ── Tall floor lamp — right near camera ──
+  const lampPost = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 5.5, 8),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, metalness: 0.8, roughness: 0.2 }));
+  lampPost.position.set(6.5, 2.75, 3);
+  scene.add(lampPost);
+  const lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.6, 12, 1, true),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, emissive: new THREE.Color(0xF5E642), emissiveIntensity: 0.8, side: THREE.DoubleSide }));
+  lampShade.position.set(6.5, 5.7, 3);
+  scene.add(lampShade);
+  scene.add(new THREE.PointLight(0xFFE066, 1.8, 8, 2)).position.set(6.5, 5.4, 3);
+
+  // ── Chair near rug ──
+  const chairMat = new THREE.MeshStandardMaterial({ color: 0x5522AA, roughness: 0.8 });
+  const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.1, 0.85), chairMat);
+  chairSeat.position.set(-2.8, 0.88, 1.5);
+  scene.add(chairSeat);
+  const chairBack = new THREE.Mesh(new THREE.BoxGeometry(0.85, 1.1, 0.08), chairMat);
+  chairBack.position.set(-2.8, 1.48, 1.1);
+  scene.add(chairBack);
+  [[-.35,-.35],[.35,-.35],[-.35,.35],[.35,.35]].forEach(([cx,cz]) => {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.88,6), chairMat);
+    leg.position.set(-2.8+cx, 0.44, 1.5+cz);
+    scene.add(leg);
+  });
+
+  // ── Small side table with mug ──
+  const stMat = new THREE.MeshStandardMaterial({ color: 0x3D1F6E, roughness: 0.7 });
+  const sideTable = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.06, 16), stMat);
+  sideTable.position.set(-4, 0.92, 2.5);
+  scene.add(sideTable);
+  const stLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.92,8), stMat);
+  stLeg.position.set(-4, 0.46, 2.5);
+  scene.add(stLeg);
+  // Mug
+  const mugMat = new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: 0.6 });
+  const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.19, 10), mugMat);
+  mug.position.set(-4, 1.045, 2.5);
+  scene.add(mug);
+
+  // Expose floaters to animate loop
+  window._floaters = floaters;
+  window._clockHour = hourHand;
+  window._clockMin  = minHand;
+
+  // ═══════════════════════════════════════════════════════
+  //  TEXTURE HELPER
+  // ═══════════════════════════════════════════════════════
+  function makeTex(fn, w = 512, h = 256) {
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#0D0519';
+    ctx.fillRect(0, 0, w, h);
+    fn(ctx, w, h);
+    return new THREE.CanvasTexture(cv);
+  }
+
+  function boxMesh(w, h, d, mat) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    m.castShadow = true;
+    return m;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  INTERACTIVE OBJECT REGISTRY
+  // ═══════════════════════════════════════════════════════
+  function reg(mesh, room, label) {
+    mesh.userData.room  = room;
+    mesh.userData.label = label;
+    mesh.userData.baseEmissive    = mesh.material.emissive ? mesh.material.emissive.clone() : new THREE.Color(0,0,0);
+    mesh.userData.baseEmissiveInt = mesh.material.emissiveIntensity || 0;
+    interactives.push(mesh);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 1 — NEON SIGN (Hero)  back wall, centre top
+  // ═══════════════════════════════════════════════════════
+  const neonTex = makeTex((ctx, W, H) => {
+    ctx.strokeStyle = 'rgba(245,230,66,.3)';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(8, 8, W-16, H-16);
+
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    ctx.shadowBlur = 28; ctx.shadowColor = '#F5E642';
+    ctx.fillStyle = '#F5E642';
+    ctx.font = `800 ${H*.44}px Syne, sans-serif`;
+    ctx.fillText('RADIO', W/2, H*.32);
+
+    ctx.shadowBlur = 16;
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 3.5;
+    ctx.font = `800 ${H*.42}px Syne, sans-serif`;
+    ctx.strokeText('FORMA', W/2, H*.7);
+  }, 1024, 320);
+
+  neonFrontMat = new THREE.MeshStandardMaterial({
+    color: 0x0D0519, map: neonTex,
+    emissiveMap: neonTex, emissive: new THREE.Color(0xF5E642), emissiveIntensity: 0.22,
+    roughness: 0.8
+  });
+
+  const neonGrp = new THREE.Group();
+  const neonBack = boxMesh(5.8, 2.0, 0.14,
+    new THREE.MeshStandardMaterial({ color: 0x0A0212, roughness: 0.9 }));
+  const neonFront = boxMesh(5.65, 1.87, 0.02, neonFrontMat);
+  neonFront.position.z = 0.09;
+  // corner bolts
+  [[-2.65, 0.8], [2.65, 0.8], [-2.65, -0.8], [2.65, -0.8]].forEach(([x, y]) => {
+    const bolt = boxMesh(0.07, 0.07, 0.07,
+      new THREE.MeshStandardMaterial({ color: 0xF5E642, metalness: .9, roughness: .2 }));
+    bolt.position.set(x, y, 0.1);
+    neonGrp.add(bolt);
+  });
+  neonGrp.add(neonBack, neonFront);
+  neonGrp.position.set(0, 7.15, -9.87);
+  scene.add(neonGrp);
+  reg(neonFront, 'hero', 'Radio Forma');
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 2 — VINTAGE RADIO (Episodes)  on desk
+  // ═══════════════════════════════════════════════════════
+  const radioTex = makeTex((ctx, W, H) => {
+    // speaker grille
+    ctx.strokeStyle = 'rgba(245,230,66,.45)';
+    ctx.lineWidth = 3;
+    for (let x = 28; x < W * .42; x += 20) {
+      ctx.beginPath(); ctx.moveTo(x, 18); ctx.lineTo(x, H-18); ctx.stroke();
+    }
+    ctx.strokeRect(20, 16, W*.4, H-32);
+
+    // dial area
+    ctx.fillStyle = '#0A0212';
+    ctx.fillRect(W*.47, 18, W*.49, H*.52);
+    ctx.strokeStyle = 'rgba(245,230,66,.3)'; ctx.lineWidth = 2;
+    ctx.strokeRect(W*.47, 18, W*.49, H*.52);
+
+    ctx.fillStyle = 'rgba(245,230,66,.75)';
+    ctx.font = `700 ${H*.14}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('RADIO FORMA', W*.72, H*.28);
+
+    // freq bar
+    ctx.fillStyle = '#2D1554';
+    ctx.fillRect(W*.49, H*.38, W*.45, 8);
+    ctx.fillStyle = '#F5E642';
+    ctx.fillRect(W*.49, H*.38, W*.28, 8);
+
+    // waveform hint
+    ctx.fillStyle = 'rgba(245,230,66,.35)';
+    [6,10,14,10,6,4,8,14,8,4,6].forEach((h, i) => {
+      ctx.fillRect(W*.49 + i*9, H*.55 - h/2, 6, h);
+    });
+  }, 512, 220);
+
+  const radioGrp = new THREE.Group();
+  const rBodyMat = new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: 0.85 });
+  const rBody = boxMesh(2.1, 0.88, 0.82, rBodyMat);
+
+  const rFrontMat = new THREE.MeshStandardMaterial({ map: radioTex, color: 0x1A0A2E, roughness: 0.85 });
+  const rFront = boxMesh(2.1, 0.88, 0.01, rFrontMat);
+  rFront.position.z = 0.415;
+
+  // knobs
+  const kMat = new THREE.MeshStandardMaterial({ color: 0x2D1554, roughness: .5, metalness: .3 });
+  const kYMat= new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: .3, metalness: .5 });
+  [[-0.45,0],[0,0],[0.5,0]].forEach(([x,,], i) => {
+    const k = new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.055,12), i===2?kYMat:kMat);
+    k.rotation.x = Math.PI/2; k.position.set(x+0.55, -0.25, 0.42);
+    radioGrp.add(k);
+  });
+  // antenna
+  const ant = new THREE.Mesh(
+    new THREE.CylinderGeometry(.013,.013,1.1,6),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, metalness:.8, roughness:.2 })
+  );
+  ant.rotation.z = -0.22; ant.position.set(0.88, 0.87, 0);
+  radioGrp.add(rBody, rFront, ant);
+  radioGrp.position.set(0, 1.65, -6);
+  scene.add(radioGrp);
+  reg(rFront, 'episodes', 'Episodes');
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 3 — WHITEBOARD (Whiteboard)  left wall
+  // ═══════════════════════════════════════════════════════
+  const wbTex = makeTex((ctx, W, H) => {
+    ctx.fillStyle = '#ECE8E0'; ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(50, H*.55); ctx.quadraticCurveTo(W*.25, H*.3, W*.5, H*.5);
+    ctx.quadraticCurveTo(W*.72, H*.68, W*.92, H*.4);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#1A0A2E'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(50, H*.75); ctx.quadraticCurveTo(W*.35, H*.6, W*.65, H*.72);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(W*.8, H*.42, H*.18, 0, Math.PI*2); ctx.stroke();
+
+    ctx.fillStyle = '#1A0A2E';
+    ctx.font = `600 ${H*.1}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('leave a mark', W/2, H*.92);
+
+    ctx.font = `800 ${H*.065}px Syne, sans-serif`;
+    ctx.fillStyle = 'rgba(26,10,46,.35)';
+    ctx.fillText('WHITEBOARD', W/2, H*.08);
+  }, 768, 512);
+
+  const wbGrp = new THREE.Group();
+  const wbFrame = boxMesh(0.16, 3.2, 4.8,
+    new THREE.MeshStandardMaterial({ color: 0x2D1554, roughness: .85 }));
+  const wbSurf = new THREE.Mesh(
+    new THREE.PlaneGeometry(4.5, 3.0),
+    new THREE.MeshStandardMaterial({ map: wbTex, roughness: .9, side: THREE.DoubleSide })
+  );
+  wbSurf.rotation.y = Math.PI / 2;
+  wbSurf.position.x = 0.09;
+  const wbTray = boxMesh(0.18, 0.09, 4.4,
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: .9 }));
+  wbTray.position.set(0, -1.65, 0);
+  const marker = boxMesh(0.065, 0.065, 0.55,
+    new THREE.MeshStandardMaterial({ color: 0xF5E642 }));
+  marker.position.set(0.09, -1.65, 0.5);
+  wbGrp.add(wbFrame, wbSurf, wbTray, marker);
+  wbGrp.position.set(-9.86, 4.2, -2);
+  scene.add(wbGrp);
+  reg(wbSurf, 'whiteboard', 'Leave a Mark');
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 4 — PORTRAIT FRAME (About)  back wall, left
+  // ═══════════════════════════════════════════════════════
+  const postTex = makeTex((ctx, W, H) => {
+    ctx.fillStyle = '#1A0A2E'; ctx.fillRect(0, 0, W, H);
+
+    // host A
+    ctx.fillStyle = '#2D1554';
+    ctx.beginPath(); ctx.arc(W*.3, H*.36, H*.18, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = '#2D1554';
+    ctx.fillRect(W*.3-H*.14, H*.55, H*.28, H*.3);
+
+    // host M
+    ctx.fillStyle = '#3D1F6E';
+    ctx.beginPath(); ctx.arc(W*.7, H*.36, H*.16, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#3D1F6E';
+    ctx.fillRect(W*.7-H*.12, H*.53, H*.24, H*.28);
+
+    ctx.strokeStyle = 'rgba(245,230,66,.2)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(W*.12, H*.88); ctx.lineTo(W*.88, H*.88); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(245,230,66,.75)';
+    ctx.font = `800 ${H*.1}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('THE HOSTS', W/2, H*.94);
+  }, 512, 720);
+
+  const frmGrp = new THREE.Group();
+  const frmOuter = boxMesh(2.4, 3.4, 0.1,
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: .5, metalness: .2 }));
+  const frmSurf = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.1, 3.1),
+    new THREE.MeshStandardMaterial({ map: postTex, roughness: .9, side: THREE.DoubleSide })
+  );
+  frmSurf.position.z = 0.07;
+  frmGrp.add(frmOuter, frmSurf);
+  frmGrp.position.set(-4.5, 4.2, -9.87);
+  scene.add(frmGrp);
+  reg(frmSurf, 'about', 'About');
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 5 — TV MONITOR (Community)  right wall
+  // ═══════════════════════════════════════════════════════
+  const tvTex = makeTex((ctx, W, H) => {
+    ctx.fillStyle = '#080210'; ctx.fillRect(0, 0, W, H);
+    const cols = 3, rows = 3;
+    const gw = Math.floor(W/cols), gh = Math.floor(H/rows);
+    const bg = ['#2D1554','#3D1F6E','#1E0C40','#3D1F6E','#2D1554','#1A0A2E','#1A0A2E','#3D1F6E','#2D1554'];
+    bg.forEach((c, i) => {
+      const cx = (i%3)*gw + 2, cy = Math.floor(i/3)*gh + 2;
+      ctx.fillStyle = c; ctx.fillRect(cx, cy, gw-4, gh-4);
+    });
+    // IG icon
+    ctx.strokeStyle = 'rgba(245,230,66,.5)'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(W/2, H/2, Math.min(W,H)*.22, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(W/2, H/2, Math.min(W,H)*.12, 0, Math.PI*2); ctx.stroke();
+    ctx.fillStyle = 'rgba(245,230,66,.5)';
+    ctx.beginPath(); ctx.arc(W/2+W*.14, H/2-H*.14, 8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(245,230,66,.35)';
+    ctx.font = `700 ${H*.09}px Syne, sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('@radio_forma', W/2, H*.97);
+  }, 512, 384);
+
+  tvScreenMat = new THREE.MeshStandardMaterial({
+    map: tvTex, emissiveMap: tvTex,
+    emissive: new THREE.Color(0x3D1F6E), emissiveIntensity: 0.35,
+    roughness: 0.6
+  });
+
+  const tvGrp = new THREE.Group();
+  const tvBody = boxMesh(0.18, 2.6, 4.0,
+    new THREE.MeshStandardMaterial({ color: 0x0D0519, roughness: .75 }));
+  const tvScr = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.6, 2.25),
+    tvScreenMat
+  );
+  tvScr.rotation.y = -Math.PI / 2;
+  tvScr.position.x = -0.1;
+  const tvStd = boxMesh(0.2, 0.65, 0.85,
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: .9 }));
+  tvStd.position.set(-0.05, -1.62, 0);
+  const tvBase = boxMesh(0.18, 0.1, 1.8,
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E }));
+  tvBase.position.set(-0.05, -1.98, 0);
+  const tvLed = new THREE.Mesh(
+    new THREE.SphereGeometry(0.04, 6, 6),
+    new THREE.MeshStandardMaterial({ color: 0xF5E642, emissive: new THREE.Color(0xF5E642), emissiveIntensity: 2.5 })
+  );
+  tvLed.position.set(-0.11, -0.98, 1.78);
+  tvGrp.add(tvBody, tvScr, tvStd, tvBase, tvLed);
+  tvGrp.position.set(9.86, 5.0, -2);
+  scene.add(tvGrp);
+  reg(tvScr, 'community', 'Community');
+
+  // ═══════════════════════════════════════════════════════
+  //  OBJECT 6 — MAILBOX (Contact)  right wall
+  // ═══════════════════════════════════════════════════════
+  const mailTex = makeTex((ctx, W, H) => {
+    ctx.strokeStyle = 'rgba(245,230,66,.28)'; ctx.lineWidth = 4;
+    ctx.strokeRect(8, 8, W-16, H-16);
+
+    // envelope body
+    const ex=W*.1, ey=H*.14, ew=W*.8, eh=H*.6;
+    ctx.strokeStyle = '#F5E642'; ctx.lineWidth = 5;
+    ctx.strokeRect(ex, ey, ew, eh);
+
+    // envelope flap V
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(ex+ew/2, ey+eh*.52);
+    ctx.lineTo(ex+ew, ey);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(245,230,66,.65)';
+    ctx.font = `700 ${H*.13}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('WRITE TO US', W/2, H*.88);
+  }, 384, 256);
+
+  const mlGrp = new THREE.Group();
+  const mlBody = boxMesh(0.22, 1.5, 2.4,
+    new THREE.MeshStandardMaterial({ color: 0x1A0A2E, roughness: .9 }));
+  const mlFace = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.2, 1.4),
+    new THREE.MeshStandardMaterial({ map: mailTex, roughness: .9, side: THREE.DoubleSide })
+  );
+  mlFace.rotation.y = -Math.PI / 2;
+  mlFace.position.x = -0.12;
+  const mlSlot = boxMesh(0.3, 0.09, 1.3,
+    new THREE.MeshStandardMaterial({ color: 0x080110, roughness: 1 }));
+  mlSlot.position.set(-0.04, 0.4, 0);
+  mlGrp.add(mlBody, mlFace, mlSlot);
+  mlGrp.position.set(9.86, 2.5, -6.5);
+  scene.add(mlGrp);
+  reg(mlFace, 'contact', 'Contact');
+
+  // ═══════════════════════════════════════════════════════
+  //  FLY-TO SYSTEM
+  // ═══════════════════════════════════════════════════════
+
+  // ── Fly helpers ───────────────────────────────────────────
+  function getLookAngles(from, to) {
+    const obj = new THREE.Object3D();
+    obj.rotation.order = 'YXZ';
+    obj.position.copy(from);
+    obj.lookAt(to);
+    return { y: obj.rotation.y, x: obj.rotation.x };
+  }
+
+  function lerpAngle(a, b, t) {
+    let d = ((b - a) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+    return a + d * t;
+  }
+
+  const HOME_POS  = new THREE.Vector3(0, 7.0,  8.0);
+  const HOME_LOOK = new THREE.Vector3(0, 5.0, -9.0);
+
+  let flyState = null;
+
+  function beginFly(endPos, lookTarget, room, doOpenPanel) {
+    const angles = getLookAngles(endPos, lookTarget);
+    flyState = {
+      startPos:   camera.position.clone(),
+      endPos:     endPos.clone(),
+      startYaw:   camera.rotation.y,
+      startPitch: camera.rotation.x,
+      endYaw:     angles.y,
+      endPitch:   angles.x,
+      room, openPanel: doOpenPanel,
+      progress: 0,
+    };
+  }
+
+  // Called by closePanel (defined outside module scope)
+  window.startFly = (room) => {
+    if (room === '_home') beginFly(HOME_POS, HOME_LOOK, '_home', false);
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  MOUSE INTERACTION
+  // ═══════════════════════════════════════════════════════
+  const tip = document.getElementById('tip');
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = (e.clientX / innerWidth)  * 2 - 1;
+    mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+
+    tip.style.left = e.clientX + 'px';
+    tip.style.top  = e.clientY + 'px';
+
+    if (!panelOpen && !flyState) {
+      const nx = (e.clientX / innerWidth  - .5) * 2;
+      const ny = (e.clientY / innerHeight - .5) * 2;
+      targetYaw   = -nx * 0.28;
+      targetPitch =  ny * 0.09;
+    }
+  });
+
+  window.addEventListener('click', e => {
+    if (panelOpen || flyState) return;
+
+    // Re-cast ray at click moment for accuracy
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(interactives);
+    if (!hits.length) return;
+
+    const hit = hits[0];
+    const room = hit.object.userData.room;
+
+    // Compute world-space surface normal of the face that was clicked
+    const worldNormal = hit.face.normal.clone()
+      .transformDirection(hit.object.matrixWorld)
+      .normalize();
+
+    // Camera destination: 1.4 units in front of the exact hit point
+    const destPos  = hit.point.clone().addScaledVector(worldNormal, 1.4);
+    // Look straight at the hit point
+    const lookTarget = hit.point.clone();
+
+    spawnRipple(e.clientX, e.clientY);
+    beginFly(destPos, lookTarget, room, true);
+  });
+
+  // touch
+  document.getElementById('c').addEventListener('touchend', e => {
+    if (panelOpen || flyState) return;
+    const tc = e.changedTouches[0];
+    mouse.x = (tc.clientX / innerWidth)  * 2 - 1;
+    mouse.y = -(tc.clientY / innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(interactives);
+    if (!hits.length) return;
+    const hit = hits[0];
+    const worldNormal = hit.face.normal.clone().transformDirection(hit.object.matrixWorld).normalize();
+    const destPos    = hit.point.clone().addScaledVector(worldNormal, 1.4);
+    beginFly(destPos, hit.point.clone(), hit.object.userData.room, true);
+  }, { passive: true });
+
+  // ═══════════════════════════════════════════════════════
+  //  ANIMATE LOOP
+  // ═══════════════════════════════════════════════════════
+  const clock = new THREE.Clock();
+
+  function glow(mesh, on) {
+    if (!mesh.material.emissive) return;
+    if (on) {
+      mesh.material.emissive.set(0xF5E642);
+      mesh.material.emissiveIntensity = 0.55;
+    } else {
+      mesh.material.emissive.copy(mesh.userData.baseEmissive);
+      mesh.material.emissiveIntensity = mesh.userData.baseEmissiveInt;
+    }
+  }
+
+  let prevT = 0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    const dt = Math.min(t - prevT, 0.05); // delta, capped to avoid jumps
+    prevT = t;
+
+    // Intro fade-in
+    if (introT < 1) {
+      introT = Math.min(t / 2.2, 1);
+      const ease = 1 - Math.pow(1 - introT, 3);
+      renderer.toneMappingExposure = ease * 2.8;
+      camera.position.z = 8 + (1 - ease) * 1.2;
+    }
+
+    // ── Fly-to animation ──
+    if (flyState) {
+      flyState.progress += dt / 1.1; // 1.1 s duration
+      const p = Math.min(flyState.progress, 1);
+      const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
+
+      camera.position.lerpVectors(flyState.startPos, flyState.endPos, ease);
+      camera.rotation.y = lerpAngle(flyState.startYaw,   flyState.endYaw,   ease);
+      camera.rotation.x = lerpAngle(flyState.startPitch, flyState.endPitch, ease);
+
+      if (p >= 1) {
+        const fs = flyState;
+        flyState = null;
+        if (fs.openPanel) {
+          // Reset look-around to neutral so it doesn't snap on close
+          curYaw = 0; curPitch = 0; targetYaw = 0; targetPitch = 0;
+          openPanel(fs.room);
+        }
+      }
+    } else if (!panelOpen) {
+      // Normal look-around
+      curYaw   += (targetYaw   - curYaw)   * 0.055;
+      curPitch += (targetPitch - curPitch) * 0.055;
+      camera.rotation.y = BASE_YAW   + curYaw;
+      camera.rotation.x = BASE_PITCH + curPitch;
+    }
+
+    // Clock hands animate with real time
+    if (window._clockHour && window._clockMin) {
+      const now = new Date();
+      window._clockHour.rotation.z = -((now.getHours() % 12) / 12) * Math.PI * 2 - (now.getMinutes() / 60) * (Math.PI / 6);
+      window._clockMin.rotation.z  = -(now.getMinutes() / 60) * Math.PI * 2;
+    }
+
+    // Neon flicker
+    if (neonFrontMat) {
+      neonFrontMat.emissiveIntensity = 0.22
+        + Math.sin(t * 2.4) * 0.025
+        + (Math.random() < 0.004 ? -0.18 : 0);
+    }
+
+    // TV screen pulse
+    if (tvScreenMat) {
+      tvScreenMat.emissiveIntensity = 0.35 + Math.sin(t * 1.1) * 0.04;
+    }
+
+    // Lamp flicker
+    if (mainLight) {
+      mainLight.intensity = 2.2 + Math.sin(t * 1.4) * 0.06;
+    }
+
+    // Hover detection
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(interactives);
+    if (hits.length && !panelOpen) {
+      const hit = hits[0].object;
+      if (hit !== hovered) {
+        if (hovered) glow(hovered, false);
+        hovered = hit;
+        glow(hovered, true);
+      }
+      tip.textContent = hovered.userData.label;
+      tip.classList.add('on');
+      document.body.style.cursor = 'pointer';
+    } else {
+      if (hovered) { glow(hovered, false); hovered = null; }
+      tip.classList.remove('on');
+      document.body.style.cursor = 'default';
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+  setTimeout(() => document.getElementById('c').classList.add('ready'), 100);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PANEL SYSTEM
+// ═══════════════════════════════════════════════════════════
+const PANELS = {
+  hero: {
+    title: 'Radio Forma',
+    html: `<div class="hp">
+      <h2><span>RADIO</span>FORMA</h2>
+      <p class="tg">design at full volume</p>
+      <p style="font-size:.82rem;line-height:1.7;opacity:.72;margin-bottom:1.8rem;">The Italian graphic design podcast. We talk type, layout, culture and everything in between — loud and unfiltered.</p>
+      <button class="pbtn"><svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"/></svg> Play Latest Episode</button>
+      <div style="margin-top:2.5rem;padding-top:1.8rem;border-top:1px solid rgba(245,230,66,.1);">
+        <p style="font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;opacity:.3;margin-bottom:1rem;">Explore the room</p>
+        ${[['📻','episodes','Episodes'],['👥','about','About'],['📸','community','Community'],['✏️','whiteboard','Whiteboard'],['✉️','contact','Contact']].map(([ico,r,lbl])=>`
+        <div onclick="openPanel('${r}')" style="display:flex;align-items:center;gap:.9rem;cursor:pointer;padding:.55rem .6rem;border:1px solid rgba(245,230,66,.08);margin-bottom:.4rem;transition:border-color .18s" onmouseover="this.style.borderColor='rgba(245,230,66,.35)'" onmouseout="this.style.borderColor='rgba(245,230,66,.08)'">
+          <span style="font-size:1.1rem">${ico}</span>
+          <span style="font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase">${lbl}</span>
+        </div>`).join('')}
+      </div></div>`
+  },
+  about: {
+    title: 'About',
+    html: `<div>
+      <p class="abihead">Two designers. One mic. Zero filters. Radio Forma is a podcast about graphic design, typography, and Italian visual culture — made for people who care about how things look.</p>
+      <div class="hcs">
+        <div class="hc"><div class="hav">A</div><div>
+          <div class="hn">Alessandro</div>
+          <p class="hb">Art director and type nerd with 10+ years in editorial design. Has strong opinions about kerning and will share them. Currently obsessed with Swiss grid systems and why everyone gets them wrong.</p>
+        </div></div>
+        <div class="hc"><div class="hav">M</div><div>
+          <div class="hn">Marta</div>
+          <p class="hb">Brand designer, illustrator, and the voice of reason in the room. Bridges contemporary visual language with Italian design heritage. Dislikes Comic Sans but will defend Helvetica to the death.</p>
+        </div></div>
+      </div>
+      <div style="margin-top:2rem;padding:1.1rem;background:rgba(245,230,66,.04);border-left:2px solid #F5E642;">
+        <p style="font-size:.78rem;line-height:1.6;opacity:.65;">"We started this because every design podcast was either too academic or too American. We wanted something that sounded like a conversation at the studio, not a TED talk."</p>
+        <p style="font-size:.65rem;opacity:.35;margin-top:.6rem;letter-spacing:.1em;text-transform:uppercase;">— Alessandro & Marta</p>
+      </div></div>`
+  },
+  episodes: {
+    title: 'Episodes',
+    html: `<div>
+      <p style="font-size:.65rem;opacity:.38;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.4rem;">Latest releases</p>
+      <div class="epl">
+        ${[['047','The Grid is a Lie','52 min · Apr 2025'],['046','Type Crimes & Misdemeanors','44 min · Mar 2025'],['045','Brutalism is Back (Was It Ever Gone?)','61 min · Mar 2025'],['044','Color Theory for Non-Cowards','48 min · Feb 2025'],['043','Italian Design is Not What You Think','55 min · Feb 2025'],['042','The Death of the Logo','39 min · Jan 2025']].map(([n,t,m])=>`
+        <div class="epc">
+          <span class="epn">#${n}</span>
+          <div class="epi"><div class="ept">${t}</div><div class="epm">${m}</div></div>
+          <div class="epb"><svg width="9" height="11" viewBox="0 0 9 11" fill="currentColor"><polygon points="0,0 9,5.5 0,11"/></svg></div>
+        </div>`).join('')}
+      </div>
+      <div style="margin-top:1.8rem;text-align:center;">
+        <a href="#" style="font-size:.66rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#F5E642;opacity:.38;text-decoration:none;border-bottom:1px solid rgba(245,230,66,.2);padding-bottom:.1rem;">View all episodes →</a>
+      </div></div>`
+  },
+  community: {
+    title: 'Community',
+    html: `<div>
+      <p style="font-size:.65rem;opacity:.38;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.4rem;">@radio_forma on Instagram</p>
+      <div class="igg">
+        ${['🎨','📐','🖋️','📻','✏️','🎙️','📖','🔤','🎭'].map((ico,i)=>`
+        <div class="igp" style="background:hsl(${268+i*9},40%,${14+i*2}%);">
+          <span>${ico}</span><div class="igo">View</div>
+        </div>`).join('')}
+      </div>
+      <p style="font-size:.7rem;font-weight:700;letter-spacing:.12em;opacity:.4;text-align:center;margin-bottom:1.8rem;">@radio_forma</p>
+      <p style="font-size:.8rem;line-height:1.65;opacity:.68;margin-bottom:1.2rem;">Join our community of designers, typographers, and visual thinkers. Share your work, debate the grid, and obsess over details together.</p>
+      <a href="https://instagram.com/radio_forma" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#F5E642;text-decoration:none;border-bottom:1px solid rgba(245,230,66,.28);padding-bottom:.1rem;">Follow on Instagram →</a>
+      </div>`
+  },
+  whiteboard: {
+    title: 'Whiteboard',
+    html: `<div><p class="wbh">Leave a mark</p>
+      <div id="cwrap"><canvas id="dc"></canvas></div>
+      <div class="wbt">
+        <div style="display:flex;gap:.35rem;align-items:center;margin-right:.4rem;">
+          <canvas class="csw act" id="sw0" width="26" height="26" style="background:#F5E642" onclick="setColor('#F5E642',this)"></canvas>
+          <canvas class="csw" id="sw1" width="26" height="26" style="background:#3D1F6E" onclick="setColor('#3D1F6E',this)"></canvas>
+          <canvas class="csw" id="sw2" width="26" height="26" style="background:#ffffff" onclick="setColor('#ffffff',this)"></canvas>
+        </div>
+        <button class="wbb act" id="bpen" onclick="setTool('pen',this)">Pen</button>
+        <button class="wbb" id="bers" onclick="setTool('erase',this)">Erase</button>
+        <button class="wbb" onclick="clearWB()">Clear</button>
+        <select id="bsz" onchange="setBrush(this.value)" style="background:#2D1554;color:#F5E642;border:1px solid rgba(245,230,66,.25);font-family:Syne,sans-serif;font-size:.65rem;font-weight:700;padding:.3rem .45rem;cursor:pointer;">
+          <option value="3">S</option><option value="6" selected>M</option><option value="13">L</option><option value="26">XL</option>
+        </select>
+      </div></div>`,
+    onOpen: initWB
+  },
+  contact: {
+    title: 'Contact',
+    html: `<div>
+      <p class="cpl">Write to us → <a class="cpa" href="mailto:ciao@radioforma.it">ciao@radioforma.it</a></p>
+      <p style="font-size:.8rem;line-height:1.65;opacity:.68;margin-bottom:1.8rem;">Pitch an episode idea, say hello, or just complain about a typeface you've been seeing everywhere. We read everything.</p>
+      <div style="padding:1.1rem;background:rgba(245,230,66,.04);border-left:2px solid #F5E642;margin-bottom:1.8rem;">
+        <p style="font-size:.75rem;line-height:1.6;opacity:.68;">For collaborations, sponsorships, or live events — use the same address and put the relevant keyword in the subject line.</p>
+      </div>
+      <div class="sr"><div class="si">📷</div>Instagram — @radio_forma</div>
+      <div class="sr"><div class="si">🎙️</div>Podcast RSS Feed</div>
+      <div class="sr"><div class="si">✉️</div>Newsletter — Subscribe</div>
+      </div>`
+  }
+};
+
+let drawColor = '#F5E642', drawSize = 6, drawTool = 'pen', drawing = false, lx = 0, ly = 0;
+
+window.setColor = (c, el) => {
+  drawColor = c;
+  document.querySelectorAll('.csw').forEach(s => s.classList.remove('act'));
+  el.classList.add('act');
+};
+window.setTool = (t, el) => {
+  drawTool = t;
+  document.querySelectorAll('.wbb').forEach(b => b.classList.remove('act'));
+  el.classList.add('act');
+};
+window.setBrush = v => { drawSize = parseInt(v); };
+window.clearWB = () => {
+  const dc = document.getElementById('dc');
+  if (dc) dc.getContext('2d').clearRect(0, 0, dc.width, dc.height);
+};
+
+function initWB() {
+  const wrap = document.getElementById('cwrap');
+  const dc   = document.getElementById('dc');
+  if (!dc) return;
+  dc.width  = wrap.clientWidth;
+  dc.height = Math.round(wrap.clientWidth * 0.6);
+  const ctx = dc.getContext('2d');
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  function pos(e) {
+    const r = dc.getBoundingClientRect();
+    const sx = dc.width / r.width, sy = dc.height / r.height;
+    const src = e.touches ? e.touches[0] : e;
+    return [(src.clientX - r.left)*sx, (src.clientY - r.top)*sy];
+  }
+  function start(e) { drawing=true; [lx,ly]=pos(e); e.preventDefault(); }
+  function move(e) {
+    if (!drawing) return; e.preventDefault();
+    const [x,y] = pos(e);
+    ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y);
+    if (drawTool==='erase') {
+      ctx.globalCompositeOperation='destination-out'; ctx.lineWidth=drawSize*4;
+    } else {
+      ctx.globalCompositeOperation='source-over'; ctx.strokeStyle=drawColor; ctx.lineWidth=drawSize;
+    }
+    ctx.stroke(); [lx,ly]=[x,y];
+  }
+  function stop() { drawing=false; }
+  dc.addEventListener('mousedown',start); dc.addEventListener('mousemove',move);
+  dc.addEventListener('mouseup',stop);    dc.addEventListener('mouseleave',stop);
+  dc.addEventListener('touchstart',start,{passive:false}); dc.addEventListener('touchmove',move,{passive:false});
+  dc.addEventListener('touchend',stop);
+}
+
+const panel = document.getElementById('panel');
+const ptitle = document.getElementById('ptitle');
+const pb     = document.getElementById('pb');
+const ov     = document.getElementById('ov');
+
+window.openPanel = function openPanel(room) {
+  const data = PANELS[room];
+  if (!data) return;
+  ptitle.textContent = data.title;
+  pb.innerHTML = data.html;
+  panel.classList.add('open');
+  ov.classList.add('on');
+  panelOpen = true;
+  document.body.style.cursor = 'default';
+  if (data.onOpen) setTimeout(data.onOpen, 60);
+};
+
+function closePanel() {
+  panel.classList.remove('open');
+  ov.classList.remove('on');
+  panelOpen = false;
+  // Fly camera back to the home position
+  if (typeof startFly === 'function') startFly('_home');
+}
+
+document.getElementById('pclose').addEventListener('click', closePanel);
+ov.addEventListener('click', closePanel);
+
+function spawnRipple(x, y) {
+  const r = document.createElement('div');
+  r.className = 'rpl';
+  r.style.left = x + 'px'; r.style.top = y + 'px';
+  document.body.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+}
+</script>
+</body>
+</html>
