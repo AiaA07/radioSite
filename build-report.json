@@ -1,8 +1,42 @@
 {
   "pipeline": "/animated-website",
-  "generatedAt": "2026-04-19T10:00:00Z",
-  "briefSource": "arguments",
-  "mcp": { "stitch": "skipped", "firecrawl": "skipped", "magic": "skipped" },
-  "skills": { "brand": "fired", "ui-ux-pro-max": "fired", "design-system": "fired", "design": "fired", "ui-styling": "fired", "nano-banana-2": "skipped" },
-  "images": { "hero": "tier-3", "episodes": "tier-3", "about": "tier-3", "features": "tier-3", "contact": "tier-3", "schedule": "tier-3", "archive": "tier-3" }
+  "generatedAt": "2026-04-20T20:30:00Z",
+  "briefSource": "brief.txt",
+  "mcp": {
+    "stitch": "fired",
+    "firecrawl": "fired",
+    "magic": "skipped"
+  },
+  "skills": {
+    "brand": "fired",
+    "ui-ux-pro-max": "fired",
+    "design-system": "fired",
+    "design": "fired",
+    "ui-styling": "fired",
+    "nano-banana-2": "skipped"
+  },
+  "images": {
+    "room-hero": "tier-3",
+    "episodes": "tier-3",
+    "about": "tier-3",
+    "features": "tier-3",
+    "contact": "tier-3",
+    "schedule": "tier-3",
+    "archive": "tier-3"
+  },
+  "stitch": {
+    "about-panel": "fired",
+    "features-panel": "fired",
+    "archive-panel": "fired",
+    "room-hero": "fell-back",
+    "episodes-panel": "fell-back",
+    "contact-panel": "fell-back",
+    "schedule-panel": "fell-back"
+  },
+  "notes": {
+    "nano-banana-2": "skipped per user instruction",
+    "magic": "no 21st.dev blocks requested in brief",
+    "stitch-failures": "room-hero 502, episodes/contact/schedule timeout — fell back to hand-authored HTML using design tokens",
+    "images-tier3": "all 7 room images are hand-authored inline SVGs with turbulence filters, directional gradients, and atmospheric depth"
+  }
 }

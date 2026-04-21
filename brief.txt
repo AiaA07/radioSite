@@ -1,0 +1,377 @@
+==============================================================
+SITE: RadioWaves
+==============================================================
+
+ROLE / CONTEXT
+--------------
+Role: You are Creative Director for an immersive web experience studio.
+Context: You are building "RadioWaves" — an interactive radio website where
+the user navigates as a first-person POV player inside a 3D realistic room.
+Every physical object in the room IS a navigation element. The vintage radio
+plays episodes, the rotary phone opens contact, the cork board reveals the
+about page, the tape deck unlocks features, the wall calendar shows the
+schedule, and the filing cabinet holds the archive. The experience feels like
+an escape room meets a lo-fi radio station — atmospheric, gamified, musical.
+You have commissioned a talented web designer to build this experience.
+
+
+BUILD STACK
+-----------
+1. Stitch (layout generation)
+2. UI UX Pro Max (style / palette / typography selection)
+3. Firecrawl (reference scrape)
+4. Magic / 21st.dev (marketing blocks)
+5. Nano Banana 2 (hero + feature imagery)
+6. Brand skill (voice + messaging)
+7. Design skill (logo, icons, OG image)
+8. Design System skill (token architecture)
+9. UI Styling skill (shadcn/ui interactive components)
+
+
+PURPOSE
+-------
+An interactive radio website where users explore a first-person 3D room to
+discover content. Clickable objects in the room navigate to: episodes, about,
+features, contact, schedule, and archive. Atmospheric, gamified, and deeply
+musical in character.
+
+
+==============================================================
+STEP 2 — BRAND VOICE (for `brand` skill)
+==============================================================
+
+Voice archetype: The Midnight DJ — cool, wry, intimate. Speaks directly to
+the listener like a late-night radio host who knows exactly what you need to
+hear. Confident without being loud. Always on-air.
+
+Tone dimensions (scale 1–5):
+- Formal ↔ Casual:        4 (casual, conversational)
+- Serious ↔ Playful:      3 (balanced — cool and playful)
+- Reserved ↔ Expressive:  4 (expressive)
+- Modern ↔ Timeless:      3 (modern with retro soul)
+
+Voice rules:
+- Speak in second person ("you," "your frequency") — never corporate.
+- Radio/broadcast metaphors are earned, not stacked. One per section max.
+- Short punchy sentences. Rhythm matters — copy should feel like it has a beat.
+- Warmth through specificity, not exclamation marks.
+
+Words to use:   frequency, tuned in, on-air, signal, static, broadcast,
+                dial, transmission, wavelength, live, heard, play
+Words to avoid: leverage, synergy, solutions, premium, content, users,
+                consumers, engage, platform
+
+Messaging framework:
+- Tagline (≤7 words):       "Your frequency. Always on."
+- Value prop (≤20 words):   "RadioWaves is a living room full of sound —
+                             tune in, explore, and never miss a signal."
+- Key phrases (3–5):        "Tune in," "You're on air," "Find your frequency,"
+                            "The room is live," "Dial something new"
+
+
+==============================================================
+STEP 3 — DESIGN SYSTEM (for `ui-ux-pro-max` + `design-system`)
+==============================================================
+
+Style keywords:   gamified, immersive, lo-fi aesthetic, musical, retro-modern,
+                  bold, tactile, cinematic, atmospheric, first-person
+
+Preferred style direction: high-contrast brutalist-retro base with warm
+practical lighting overlaid — think a real radio booth at 2am. Bold geometry
+cut by warm amber lamp glow. Objects feel physical and clickable. No soft
+claymorphism — surfaces are matte, worn, real.
+
+COLOR SYSTEM (semantic roles):
+- Primary:         bold yellow #F5E642 (lamp light, hover states, active indicators)
+- Secondary:       pure black #000000 (dominant background, deep surfaces)
+- Tertiary:        signal red #FF2200 (CTAs, ON-AIR indicators, alerts)
+- Accent:          warm amber #FF8C00 (practical light spill, mid-tones)
+- Surface-base:    near-black #0d0d0d (room walls, desk)
+- Surface-raised:  dark charcoal #1a1a1a (cards, panels)
+- Surface-mid:     #2D1554 (purple-tinted surfaces in 3D room)
+- Ink:             off-white #f0ece0 (body text on dark)
+- Success/info:    muted green #3d7a4a (VU meter active) / amber (info states)
+
+Contrast requirement: WCAG AA minimum on all text. Yellow-on-black and
+white-on-black are primary pairings — both exceed AAA.
+
+TYPOGRAPHY:
+- Display:   'Syne', sans-serif (bold condensed, broadcast energy)
+- Body:      'Syne', sans-serif (clean, 16–18px base)
+- Accent:    same as body (consistent brutalist approach)
+- Type scale: 1.333 (perfect fourth) modular scale
+- Line height: 1.6 body, 1.1 display
+
+SPACING & LAYOUT:
+- Spacing scale (4px base): 4, 8, 12, 16, 24, 32, 48, 64, 96, 128
+- Container max-width: 1440px (room fills viewport)
+- Grid: freeform / absolute positioning within room scene; standard 12-col
+  for panel overlays and content drawers
+- Section vertical rhythm: panels slide in over the room — no page scroll
+  in the core experience
+
+RADII:
+- sm 4px  |  md 8px  |  lg 12px  |  xl 20px  |  pill 9999px
+Default card radius: md. Buttons: sm (boxy, physical feel).
+
+ELEVATION (practical lighting — no soft clay):
+- sm  0 2px 6px   rgba(0,0,0,0.5)
+- md  0 6px 20px  rgba(0,0,0,0.6)
+- lg  0 16px 48px rgba(0,0,0,0.7)
+Hover glow: 0 0 12px rgba(255,220,0,0.35) — yellow lamp spill on active objects.
+
+MOTION LANGUAGE:
+- Easing:     cubic-bezier(0.16, 1, 0.3, 1) for panel entrances
+- Durations:  micro 100ms, standard 250ms, expressive 500ms, room-load 1200ms
+- Stagger:    60ms between list items in open panels
+- Hover:      object highlight + yellow glow pulse 200ms
+- Panel open: slide up from bottom or fade in from center, 350ms
+- Room load:  static noise flash → room fades in, 1200ms total
+- prefers-reduced-motion: all transforms collapse to opacity-only at 200ms
+
+
+==============================================================
+STEP 4 — REFERENCE SCRAPE c(for Firecrawl)
+==============================================================
+Reference URL: https://www.caffe.design
+
+Borrow:
+- Minimalist grid layout structure (clean, spacious)
+- Typography hierarchy (large display text, tight line heights)
+- Card spacing and hover transitions
+- Contrast between bold headers and subtle body text
+- "Facciamo Cose" / "Prodottini" section layout patterns
+- Gallery/masonry grid arrangement
+
+Avoid:
+- Italian language text (must be translated to English)
+- Rounded corners on containers (convert to 4px or less)
+- Soft pastel colors (replace with yellow/black/red palette)
+- Centered text blocks (use left-aligned for radio content)
+- Decorative illustrations without clear purpose
+
+Firecrawl Instructions:
+- Scrape the grid layout structure from the homepage
+- Extract typography: font sizes, weights, spacing between elements
+- Analyze how cards are structured (image + title + description)
+- Identify hover effect patterns
+- Return structured data: layout_type, typography_scale, spacing_values, card_structure
+- Translate all Italian content to English in the scraped output
+
+==============================================================
+STEP 5 — SECTIONS & LAYOUT (for Stitch)
+==============================================================
+Section order and goal:
+
+1. Room (hero/entry)  — full-viewport first-person 3D room scene; all
+                        navigation lives here as interactive objects;
+                        ambient sound option; subtle object hover states
+2. Episodes           — triggered by clicking the vintage radio; drawer/panel
+                        opens with episode list, player, show art, descriptions
+3. About              — triggered by the cork board on the wall; panel reveals
+                        brand story, team, mission, pinned notes aesthetic
+4. Features           — triggered by the tape deck / mixing board; panel shows
+                        platform features with tactile icon cards
+5. Contact            — triggered by the rotary phone; panel opens contact
+                        form, social links, booking/press inquiry options
+6. Schedule           — triggered by the wall calendar or analog clock; panel
+                        shows upcoming broadcasts, live show times
+7. Archive            — triggered by the filing cabinet or cassette shelf;
+                        panel shows past episodes, seasons, searchable catalog
+
+Stitch Generation Instructions:
+- Generate 7 standalone HTML fragments matching the index.html panel structure
+- Each fragment: episodes-panel.html, about-panel.html, features-panel.html, contact-panel.html, schedule-panel.html, archive-panel.html, whiteboard-panel.html
+- Fragments must use the existing CSS classes from index.html (.hp, .epl, .epc, .igg, .wbh, etc.)
+- Episodes panel: 6 episode cards with #047-#042, durations, play buttons
+- About panel: host profiles (Alessandro/Marta), mission statement
+- Features panel: grid of 6 feature cards (Live Broadcasting, Episode Archive, Schedule, On-Demand, Multi-show, Notifications)
+- Contact panel: email link, social links, press inquiry section
+- Schedule panel: week view with days (Mon-Sun), time slots (08:00-13:00), LIVE indicator
+- Archive panel: cassette-style cards with EP_401-404, durations, REC dates
+- Whiteboard panel: drawing canvas with color picker, brush sizes, erase/clear
+
+Hero 21st.dev prompt:
+  "A first-person POV interactive room scene with a moody lo-fi radio station
+  aesthetic — warm desk lamp light, vintage radio, rotary phone, cork board,
+  tape deck, bold yellow and red accents on a dark background, objects subtly
+  glow or animate on hover to signal interactivity, atmospheric depth of
+  field effect."
+
+
+==============================================================
+STEP 5.5 — MARKETING BLOCKS (for Magic / 21st.dev)
+==============================================================
+
+Use these 21st.dev blocks as base templates:
+
+Hero Block: 21st.dev/p/hero-podcast-brutalist
+  → Customization: Replace colors with #F5E642 primary, #0d0d0d background
+  → Add: Static noise overlay effect
+  → Remove: All border-radius > 4px
+
+Feature Grid: 21st.dev/p/feature-grid-cassette
+  → Customization: 6 feature cards with tactile hover (yellow glow #F5E642)
+  → Icons: Use material-symbols-outlined (radio, settings_voice, calendar_today, play_circle, dynamic_feed, notifications_active)
+  → Replace text: "Live Broadcasting", "Episode Archive", "Schedule", "On-Demand", "Multi-show", "Notifications"
+
+Call-to-Action: 21st.dev/p/cta-radio-signal
+  → Customization: Replace text with "Find your frequency"
+  → Add: Red ON-AIR badge pulse animation
+  → Button: "Tune In Now"
+
+Magic Integration:
+- Import all blocks as Web Components
+- Apply RadioWaves design tokens (yellow/black/red palette)
+- Ensure zero border-radius on all containers
+- Add prefers-reduced-motion media query support
+
+
+==============================================================
+STEP 6 — IMAGERY (for Nano Banana 2, with fallback tiers)
+==============================================================
+Global art direction: hyper-realistic with cinematic color grading — dark
+moody interiors, warm practical lighting from lamps and ON-AIR signs,
+shallow depth of field, no text visible in images, consistent yellow/black/
+red palette across all renders.
+
+Fallback art direction: if photorealistic render is unavailable, shift to
+bold graphic illustration — high contrast, flat color with yellow/black/red
+only, strong silhouettes. NO soft pastels or generic stock-photo warmth.
+Brand boldness must survive at every fallback tier.
+
+Third-party SVG (Tier 4): CC0 / CC-BY only. Attribution in footer if used.
+
+Aspect ratios:
+- Room hero:   16:9 (full viewport, 2560×1440 export)
+- Panel hero:  4:3 (top of each content panel)
+- Portrait:    3:4 (episode art, team photos)
+- Gallery:     mixed (square + 4:5)
+- OG/social:   1200×630
+
+Per-image prompts:
+- Room hero    — first-person view of a cluttered radio station desk at night,
+                 warm lamp glow, vintage radio glowing yellow, rotary phone,
+                 red ON-AIR sign lit, cassette tapes stacked, cork board on
+                 wall, dark moody atmosphere, photorealistic, shallow DoF
+- Episodes     — close-up of a vintage radio dial with yellow frequency
+                 markers, static-noise texture, bold red tuning needle,
+                 cinematic crop
+- About        — a cork board covered in photos, handwritten notes, red
+                 string connecting pins, warm overhead practical light,
+                 lived-in texture
+- Features     — a tape deck with a cassette half-inserted, yellow playback
+                 buttons illuminated, dark matte desk surface, macro lens feel
+- Contact      — a black rotary phone with a yellow notepad beside it, pen
+                 resting on paper, moody directional side lighting
+- Schedule     — a wall-mounted analog clock above a paper calendar with red
+                 dates circled, warm single-bulb overhead light
+- Archive      — a wooden shelf lined with labeled cassette tape cases, bold
+                 color-coded spines in yellow, black, and red, even shelf
+                 lighting
+
+Nano Banana 2 Execution:
+- Generate ALL 7 images using the per-image prompts above
+- Style: photorealistic with film grain overlay, yellow/black/red palette only
+- Output format: WebP, 80% quality
+- If API unavailable: fallback to Unsplash + CSS filters (hue-rotate, contrast boost, yellow overlay)
+- Embed image URLs directly in final index.html with lazy loading
+
+
+==============================================================
+STEP 7 — BRAND ASSETS (for `design` skill)
+==============================================================
+
+LOGO brief:
+- Concept:    a bold radio wave / signal emission mark combined with a
+              retro dial or frequency bar. Stark, geometric, high-contrast.
+              NOT rounded or friendly — confident and broadcast-bold.
+- Wordmark:   "RadioWaves" in the display typeface from Step 3.
+- Variants:   primary (full), stacked, icon-only, monochrome, inverse.
+- Export:     SVG (primary), PNG @ 2x, favicon 32/48/180px.
+
+ICON SET (SVG, consistent stroke 2px, squared caps, radius-matched to
+Step 3's sm/md radius):
+- radio-dial      (Room / hero nav indicator)
+- waveform        (Episodes)
+- pin-board       (About)
+- tape-reel       (Features / Archive)
+- phone-rotary    (Contact)
+- calendar-grid   (Schedule)
+- cassette        (Archive)
+- signal-bars     (general / branding)
+- on-air-badge    (live indicator)
+- headphones      (player / listening)
+- record          (now playing)
+
+OG / SOCIAL CARD (1200×630):
+- Logo top-left, tagline centered in bold display type, room scene right-60%.
+- Safe-area padding 64px. Yellow/black/red palette only.
+
+
+==============================================================
+STEP 8 — INTERACTIVE COMPONENTS (for `ui-styling` / shadcn)
+==============================================================
+
+Required shadcn/ui primitives:
+- Drawer          (all room-object panels slide in over the scene)
+- Dialog          (episode detail modal, RSVP / booking)
+- Form + Input    (Contact form with Zod validation)
+- Select          (archive filter by season/show, schedule filter)
+- Carousel        (episode art, archive browsing)
+- Card            (episode cards, feature cards, schedule items)
+- Tabs            (episodes by show/season; archive by year)
+- Tooltip         (hover labels on room objects — "click to tune in" etc.)
+- Badge           (LIVE, NEW EP, REPLAY, COMING SOON)
+- Toast           (form-submit confirmation, now-playing notification)
+- Slider          (audio player scrubber, volume)
+- Toggle          (ambient sound on/off, dark/darker mode)
+
+Interaction states required on every interactive element:
+default, hover, active, focus-visible, disabled, loading.
+
+Focus-visible: 2px yellow ring, 2px offset, matches Step 3 radius.
+Room objects: additional glow state (yellow pulse) on hover.
+
+
+==============================================================
+STEP 9 — ASSEMBLE & ANIMATE (final index.html)
+==============================================================
+
+RESPONSIVE BREAKPOINTS: 640 (sm), 1024 (lg), 1440 (xl). Mobile-first.
+Mobile fallback: room scene becomes a vertical menu with object thumbnails
+as nav cards — full 3D room is desktop/tablet only.
+
+PERFORMANCE BUDGET:
+- LCP  < 2.5s
+- CLS  < 0.05
+- Room scene loads progressively: dark bg → lamp glow → full scene
+- Lazy-load panel imagery (loading="lazy", decoding="async")
+- Audio assets load on user interaction only (no autoplay)
+
+SEO / META:
+- <title>RadioWaves — Your Frequency. Always On.</title>
+- meta description: value prop from Step 2 (≤155 chars)
+- OG tags: og:title, og:description, og:image (Step 7 card), og:type=website
+- Twitter card: summary_large_image
+- JSON-LD: RadioStation schema with broadcast frequency + social links
+
+ACCESSIBILITY:
+- Landmark regions: header, nav, main, footer, section[aria-label]
+- Skip-to-content link (bypasses room scene to text nav)
+- All room objects have aria-label + role="button"
+- Alt text on every image (descriptive)
+- prefers-reduced-motion: room scene static image fallback, no glow pulses
+- Tap targets ≥ 44×44px on mobile
+- Form labels always visible
+
+ANIMATION ON ASSEMBLY:
+- Room load:       static noise flash (80ms) → black → room fade in (1200ms)
+- Object hover:    yellow glow pulse + subtle scale 1.02, 200ms
+- Panel open:      translateY(100%) → 0 or opacity 0→1, 350ms
+- Panel close:     reverse, 250ms
+- Episode player:  waveform animation while playing (CSS bars)
+- ON-AIR badge:    slow red pulse, 2s loop
+- Schedule items:  stagger reveal 60ms on panel open
+- Carousel:        slide 400ms with Step 3 easing
+- prefers-reduced-motion: all transforms → opacity only, 200ms
