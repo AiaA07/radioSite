@@ -1,42 +1,52 @@
 {
   "pipeline": "/animated-website",
-  "generatedAt": "2026-04-20T20:30:00Z",
-  "briefSource": "brief.txt",
+  "generatedAt": "2026-04-23T12:00:00Z",
+  "briefSource": "arguments (ReferenceCode2.docx tech stack + brief.txt brand/design tokens)",
+  "outputFile": "index2.html",
   "mcp": {
-    "stitch": "fired",
-    "firecrawl": "fired",
-    "magic": "skipped"
+    "stitch": "fired (5 panels: Episodes, About, Features, Contact, Schedule — Archive hand-authored)",
+    "firecrawl": "fired (caffe.design scraped: minimalist nav-as-items, 35px headings, 10px rhythm)",
+    "magic": "skipped (no 21st.dev block explicitly requested)"
   },
   "skills": {
-    "brand": "fired",
-    "ui-ux-pro-max": "fired",
-    "design-system": "fired",
-    "design": "fired",
-    "ui-styling": "fired",
-    "nano-banana-2": "skipped"
+    "brand": "fired (Midnight DJ voice, 'Your frequency. Always on.' tagline)",
+    "ui-ux-pro-max": "fired (brutalist-retro, yellow/black/red, Syne typeface)",
+    "design-system": "fired (3-layer CSS token architecture on :root)",
+    "design": "fell-back (Gemini API not configured — logo hand-authored inline SVG)",
+    "ui-styling": "fired (waveform player bars, ON-AIR pulse badge, cassette cards, industrial inputs)",
+    "nano-banana-2": "fell-back (infsh not configured — all imagery is tier-3 hand-authored SVG/CSS)"
   },
   "images": {
-    "room-hero": "tier-3",
+    "room-hero": "tier-3 (Three.js procedural geometry — no flat image)",
     "episodes": "tier-3",
     "about": "tier-3",
     "features": "tier-3",
     "contact": "tier-3",
     "schedule": "tier-3",
-    "archive": "tier-3"
+    "archive": "tier-3 (cassette SVG reel icons, hand-authored)"
   },
-  "stitch": {
-    "about-panel": "fired",
-    "features-panel": "fired",
-    "archive-panel": "fired",
-    "room-hero": "fell-back",
-    "episodes-panel": "fell-back",
-    "contact-panel": "fell-back",
-    "schedule-panel": "fell-back"
+  "techStack": {
+    "3D": "Vanilla Three.js r160 (R3F architecture adapted for single-file HTML)",
+    "raycasting": "THREE.Raycaster via onPointerOver/onClick pattern",
+    "cameraChoreography": "Vector3.lerp / smooth slerp to per-object target positions",
+    "panels": "Stitch-generated HTML panels with Tailwind CSS CDN",
+    "stateManagement": "Zustand-inspired vanilla JS module pattern",
+    "geometry": "Procedural BoxGeometry / CylinderGeometry / PlaneGeometry proxy objects",
+    "lighting": "AmbientLight + PointLight (desk lamp) + SpotLight (ON-AIR) + RectAreaLight (ceiling)"
+  },
+  "panels": {
+    "episodes": "stitch-fired",
+    "about": "stitch-fired",
+    "features": "stitch-fired",
+    "contact": "stitch-fired",
+    "schedule": "stitch-fired",
+    "archive": "hand-authored (Stitch call rejected by user)"
   },
   "notes": {
-    "nano-banana-2": "skipped per user instruction",
-    "magic": "no 21st.dev blocks requested in brief",
-    "stitch-failures": "room-hero 502, episodes/contact/schedule timeout — fell back to hand-authored HTML using design tokens",
-    "images-tier3": "all 7 room images are hand-authored inline SVGs with turbulence filters, directional gradients, and atmospheric depth"
+    "indexHtml": "UNTOUCHED — new build written to index2.html only",
+    "stitch": "All 5 fired panels decoded from base64 htmlCode, styles + Tailwind classes preserved",
+    "firecrawl": "Borrowed: minimalist spacious grid, nav-as-items, bold section titles. Avoided: Italian, pastels, rounded corners",
+    "accessibility": "skip-to-content, aria-labels on all 3D objects, landmark regions, focus-visible yellow ring, prefers-reduced-motion",
+    "seo": "JSON-LD RadioStation schema, OG tags, Twitter card, descriptive title/description"
   }
 }

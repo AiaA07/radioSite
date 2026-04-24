@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<!-- build-provenance
+  pipeline: /animated-website
+  generated-at: 2026-04-23T12:00:00Z
+  brief-source: arguments
+  mcp:
+    stitch: fired (5 panels generated — Episodes, About, Features, Contact, Schedule; Archive hand-authored)
+    firecrawl: fired (caffe.design scraped — minimalist nav-as-items, 35px headings, 10px rhythm)
+    magic: skipped (no 21st.dev block explicitly requested)
+  skills:
+    brand: fired (Midnight DJ voice, "Your frequency. Always on.")
+    ui-ux-pro-max: fired (brutalist-retro, yellow/black/red palette, Syne typeface)
+    design-system: fired (3-layer token architecture, CSS custom properties)
+    design: fell-back (Gemini API not configured — logo hand-authored SVG)
+    ui-styling: fired (interactive components: waveform, audio slider, ON-AIR badge)
+    nano-banana-2: fell-back (infsh not configured — imagery is hand-authored SVG tier-3)
+  images:
+    room-hero: tier-3 (hand-authored inline SVG)
+    episodes: tier-3
+    about: tier-3
+    features: tier-3
+    contact: tier-3
+    schedule: tier-3
+    archive: tier-3
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RadioWaves — Your Frequency. Always On.</title>
+  <meta name="description" content="RadioWaves is a living room full of sound — tune in, explore, and never miss a signal. Your frequency, always on.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="RadioWaves — Your Frequency. Always On.">
+  <meta property="og:description" content="RadioWaves is a living room full of sound — tune in, explore, and never miss a signal.">
+  <meta property="og:image" content="https://radiowaves.fm/og.jpg">
+  <meta property="og:url" content="https://radiowaves.fm">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RadioWaves — Your Frequency. Always On.">
+  <meta name="twitter:description" content="RadioWaves is a living room full of sound — tune in, explore, and never miss a signal.">
+  <meta name="twitter:image" content="https://radiowaves.fm/og.jpg">
+
+  <!-- JSON-LD: RadioStation -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RadioStation",
+    "name": "RadioWaves",
+    "slogan": "Your frequency. Always on.",
+    "description": "RadioWaves is a living room full of sound — tune in, explore, and never miss a signal.",
+    "broadcastFrequency": "FM 101.9",
+    "url": "https://radiowaves.fm",
+    "sameAs": ["https://twitter.com/radiowaves", "https://instagram.com/radiowaves"]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#F5E642',
+            'accent-red': '#FF2200',
+            amber: '#FF8C00',
+            background: '#000000',
+            'surface-container': '#1a1a1a',
+            'surface-container-lowest': '#0d0d0d',
+            'surface-container-high': '#222222',
+            'surface-bright': '#2a2a2a',
+            'on-surface': '#f0ece0',
+            'primary-fixed': '#F5E642',
+            'primary-yellow': '#F5E642',
+            'on-primary': '#000000',
+            outline: '#555555',
+            error: '#FF2200',
+          },
+          fontFamily: {
+            syne: ['Syne', 'sans-serif'],
+            headline: ['Syne', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --color-primary: #F5E642;
+      --color-bg: #000000;
+      --color-cta: #FF2200;
+      --color-accent: #FF8C00;
+      --color-surface: #0d0d0d;
+      --color-surface-raised: #1a1a1a;
+      --color-ink: #f0ece0;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --ease-panel: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-micro: 100ms;
+      --dur-std: 250ms;
+      --dur-exp: 500ms;
+      --dur-load: 1200ms;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Syne', sans-serif; color: var(--color-ink); }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute; top: -999px; left: 16px;
+      background: var(--color-primary); color: #000;
+      padding: 8px 16px; font-weight: 700; z-index: 9999;
+      text-decoration: none; border-radius: var(--radius-sm);
+    }
+    .skip-link:focus { top: 8px; }
+
+    /* ── NOISE FLASH OVERLAY ── */
+    #noise {
+      position: fixed; inset: 0; z-index: 1000;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.35'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+      opacity: 1;
+      animation: noiseFlash 80ms step-end forwards, noiseOut var(--dur-load) var(--ease-panel) 80ms forwards;
+    }
+    @keyframes noiseFlash { 0%,100% { opacity:1; background-color: rgba(255,255,255,0.15); } }
+    @keyframes noiseOut { 0% { opacity:1; } 100% { opacity:0; } }
+
+    /* ── THREE.JS CANVAS ── */
+    #c {
+      position: fixed; inset: 0; display: block;
+      opacity: 0; transition: opacity var(--dur-load) var(--ease-panel);
+    }
+    #c.ready { opacity: 1; }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    #hud > * { pointer-events: all; }
+
+    #logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--color-primary);
+    }
+    #logo svg { width: 32px; height: 32px; }
+    #logo-text { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; }
+
+    #on-air {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--color-cta); color: #fff;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.2em;
+      padding: 4px 10px; border-radius: var(--radius-sm);
+      text-transform: uppercase;
+    }
+    #on-air-dot {
+      width: 6px; height: 6px; background: #fff; border-radius: 50%;
+      animation: onAirPulse 2s ease-in-out infinite;
+    }
+    @keyframes onAirPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.7); }
+    }
+
+    #hud-nav { display: flex; gap: 6px; align-items: center; }
+    .hud-btn {
+      background: transparent; border: 1px solid rgba(245,230,66,0.3);
+      color: var(--color-primary); font-family: 'Syne', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 6px 12px; cursor: pointer;
+      border-radius: var(--radius-sm); transition: all var(--dur-std);
+    }
+    .hud-btn:hover, .hud-btn:focus-visible {
+      background: var(--color-primary); color: #000;
+      outline: none; box-shadow: 0 0 12px rgba(245,230,66,0.35);
+    }
+    .hud-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+    /* ── PANELS OVERLAY SYSTEM ── */
+    .panel {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      height: 88vh; max-height: 900px;
+      background: #000;
+      transform: translateY(100%);
+      transition: transform 350ms var(--ease-panel);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .panel.open { transform: translateY(0); }
+    .panel-close-btn {
+      position: sticky; top: 0; right: 0; z-index: 10;
+      float: right; margin: 16px 20px 0 0;
+      background: var(--color-cta); color: #fff; border: none;
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      cursor: pointer; font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--dur-std);
+    }
+    .panel-close-btn:hover { background: #cc1800; }
+    .panel-close-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    body.panel-open { overflow: hidden; }
+
+    /* ── PANEL BACKDROP ── */
+    #panel-backdrop {
+      position: fixed; inset: 0; z-index: 150;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(2px);
+      opacity: 0; pointer-events: none;
+      transition: opacity 300ms;
+    }
+    #panel-backdrop.show { opacity: 1; pointer-events: all; }
+
+    /* ── OBJECT TOOLTIP ── */
+    #tooltip {
+      position: fixed; z-index: 100;
+      background: var(--color-primary); color: #000;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+      padding: 4px 10px; border-radius: var(--radius-sm);
+      text-transform: uppercase; pointer-events: none;
+      opacity: 0; transition: opacity 200ms;
+      white-space: nowrap;
+    }
+
+    /* ── WAVEFORM PLAYER ── */
+    .waveform-bars {
+      display: flex; align-items: flex-end; gap: 3px; height: 32px;
+    }
+    .wv-bar {
+      width: 4px; background: var(--color-primary); border-radius: 2px;
+      animation: wvPulse 0.8s ease-in-out infinite alternate;
+    }
+    .wv-bar:nth-child(1) { animation-delay: 0s;    height: 40%; }
+    .wv-bar:nth-child(2) { animation-delay: 0.1s;  height: 80%; }
+    .wv-bar:nth-child(3) { animation-delay: 0.05s; height: 60%; }
+    .wv-bar:nth-child(4) { animation-delay: 0.15s; height: 90%; }
+    .wv-bar:nth-child(5) { animation-delay: 0.08s; height: 50%; }
+    .wv-bar:nth-child(6) { animation-delay: 0.12s; height: 70%; }
+    .wv-bar:nth-child(7) { animation-delay: 0.03s; height: 45%; }
+    .wv-bar:nth-child(8) { animation-delay: 0.18s; height: 85%; }
+    .wv-bar:nth-child(9) { animation-delay: 0.07s; height: 55%; }
+    .wv-bar:nth-child(10){ animation-delay: 0.14s; height: 75%; }
+    .wv-bar:nth-child(11){ animation-delay: 0.04s; height: 35%; }
+    .wv-bar:nth-child(12){ animation-delay: 0.16s; height: 65%; }
+    @keyframes wvPulse { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+
+    /* ── MOBILE NAV ── */
+    #mobile-nav {
+      display: none;
+      position: fixed; inset: 0; z-index: 40;
+      background: #000;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; padding: 32px;
+    }
+    .mobile-nav-card {
+      width: 100%; max-width: 340px;
+      background: var(--color-surface-raised);
+      border: 1px solid rgba(245,230,66,0.2);
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+      cursor: pointer; border-radius: var(--radius-sm);
+      transition: all var(--dur-std);
+      text-align: left;
+    }
+    .mobile-nav-card:hover {
+      background: var(--color-primary); color: #000;
+      border-color: var(--color-primary);
+    }
+    .mobile-nav-card:hover .mnc-label { color: #000; }
+    .mobile-nav-card:hover .mnc-icon { color: #000; }
+    .mnc-icon { font-size: 28px; color: var(--color-primary); }
+    .mnc-label { font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); }
+    .mnc-desc { font-size: 11px; color: #888; margin-top: 2px; }
+
+    @media (max-width: 767px) {
+      #c { display: none; }
+      #hud-nav { display: none; }
+      #mobile-nav { display: flex; }
+    }
+
+    /* ── prefers-reduced-motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 200ms !important; transition-duration: 200ms !important; }
+      #noise { animation: noiseOut 200ms forwards !important; }
+      .panel { transition: opacity 200ms !important; transform: none !important; }
+      .panel:not(.open) { opacity: 0; pointer-events: none; }
+      .panel.open { opacity: 1; }
+    }
+
+    /* ── ARCHIVE PANEL custom styles ── */
+    .cassette-card {
+      background: var(--color-surface-raised);
+      border-left: 4px solid var(--color-primary);
+      padding: 20px;
+      display: flex; gap: 20px; align-items: center;
+    }
+    .cassette-reel {
+      flex-shrink: 0; width: 52px; height: 52px; position: relative;
+    }
+    .cassette-reel svg { width: 100%; height: 100%; }
+    .cassette-code {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.15em;
+      color: var(--color-primary); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .cassette-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .cassette-meta { font-size: 12px; color: #888; }
+    .rec-badge {
+      background: var(--color-cta); color: #fff;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.2em;
+      padding: 2px 7px; border-radius: 2px; text-transform: uppercase;
+    }
+
+    /* ── CONTACT form inputs ── */
+    .industrial-input {
+      width: 100%; background: var(--color-surface-raised);
+      border: 1px solid rgba(245,230,66,0.3); border-radius: var(--radius-sm);
+      color: #fff; padding: 12px 16px;
+      font-family: 'Syne', sans-serif; font-size: 14px;
+      transition: border-color var(--dur-std);
+    }
+    .industrial-input:focus {
+      outline: none; border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(245,230,66,0.2);
+    }
+    .industrial-input::placeholder { color: #555; }
+
+    /* ── ABOUT texture ── */
+    .texture-bg {
+      background-color: #0d0e0a;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    }
+
+    /* ── focus-visible global ── */
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="dark">
+
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- Noise flash -->
+<div id="noise" aria-hidden="true"></div>
+
+<!-- HUD -->
+<header id="hud" role="banner">
+  <a id="logo" href="#" aria-label="RadioWaves home">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="16" cy="16" r="4" fill="#F5E642"/>
+      <path d="M10 16 Q10 8 16 8 Q22 8 22 16" stroke="#F5E642" stroke-width="2" fill="none" stroke-linecap="square"/>
+      <path d="M6 16 Q6 4 16 4 Q26 4 26 16" stroke="#FF8C00" stroke-width="1.5" fill="none" stroke-linecap="square"/>
+      <path d="M2 16 Q2 0 16 0 Q30 0 30 16" stroke="#FF2200" stroke-width="1" fill="none" stroke-linecap="square"/>
+      <line x1="16" y1="20" x2="16" y2="28" stroke="#F5E642" stroke-width="2"/>
+      <line x1="12" y1="28" x2="20" y2="28" stroke="#F5E642" stroke-width="2"/>
+    </svg>
+    <span id="logo-text">RadioWaves</span>
+  </a>
+
+  <nav id="hud-nav" aria-label="Room objects navigation">
+    <button class="hud-btn" data-panel="episodes" aria-label="Open Episodes panel">Episodes</button>
+    <button class="hud-btn" data-panel="about"    aria-label="Open About panel">About</button>
+    <button class="hud-btn" data-panel="features" aria-label="Open Features panel">Features</button>
+    <button class="hud-btn" data-panel="contact"  aria-label="Open Contact panel">Contact</button>
+    <button class="hud-btn" data-panel="schedule" aria-label="Open Schedule panel">Schedule</button>
+    <button class="hud-btn" data-panel="archive"  aria-label="Open Archive panel">Archive</button>
+  </nav>
+
+  <div id="on-air" role="status" aria-live="polite" aria-label="Station is on air">
+    <span id="on-air-dot" aria-hidden="true"></span>
+    ON AIR
+  </div>
+</header>
+
+<!-- Three.js Canvas -->
+<canvas id="c" role="application" tabindex="0"
+  aria-label="Interactive 3D radio station room. Click objects to open content panels, or use the navigation buttons above.">
+</canvas>
+
+<!-- Tooltip -->
+<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+<!-- Panel Backdrop -->
+<div id="panel-backdrop" aria-hidden="true"></div>
+
+<!-- PANEL: EPISODES -->
+<div id="panel-episodes" class="panel" role="dialog" aria-modal="true" aria-label="Episodes — tune in"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close Episodes panel">✕</button>
+  <!-- Main Panel sliding up -->
+<main class="h-[870px] w-full bg-surface-container flex flex-col relative z-10 border-t-4 border-primary">
+<!-- Header -->
+<header class="flex justify-between items-start p-6 bg-background">
+<h1 class="font-syne font-black text-primary text-6xl md:text-8xl tracking-tighter uppercase leading-none">
+                TUNE IN
+            </h1>
+
+</header>
+<!-- Episode Grid -->
+<div class="flex-1 overflow-y-auto p-6 bg-background">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto">
+<!-- Card 1 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#047</span>
+<span class="text-amber font-mono text-sm">48MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">Late Night Static</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#046</span>
+<span class="text-amber font-mono text-sm">52MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">Frequency Shift</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#045</span>
+<span class="text-amber font-mono text-sm">44MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">Signal Lost</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#044</span>
+<span class="text-amber font-mono text-sm">61MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">The Dead Air Hour</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#043</span>
+<span class="text-amber font-mono text-sm">38MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">Transmission</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="bg-[#1a1a1a] p-6 flex flex-col justify-between group hover:bg-surface-bright transition-colors duration-200 min-h-[160px]">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary text-black font-bold px-3 py-1 text-sm tracking-widest uppercase">EP#042</span>
+<span class="text-amber font-mono text-sm">55MIN</span>
+</div>
+<div class="flex justify-between items-end">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-white uppercase group-hover:text-primary transition-colors duration-200">Wavelength</h2>
+<button class="bg-accent-red text-white p-3 hover:bg-white hover:text-black transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+<!-- Audio Player Bar (BottomNavBar) -->
+<nav class="bg-[#1a1a1a] text-primary w-full h-24 border-t-4 border-[#F5E642] flex justify-between items-center px-6 sticky bottom-0">
+<div class="flex items-center gap-6 h-full">
+<!-- Active Playing Info -->
+<div class="hidden md:flex flex-col h-full justify-center">
+<span class="font-headline uppercase text-xs font-bold tracking-widest text-primary">NOW PLAYING</span>
+<span class="font-syne font-bold text-xl text-white tracking-tight uppercase">Late Night Static</span>
+</div>
+</div>
+<!-- Waveform visualizer -->
+<div class="flex items-end h-12 gap-1 px-8">
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+</div>
+<!-- Controls -->
+<div class="flex items-center gap-4 h-full">
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="skip_previous" data-weight="fill" style="font-variation-settings: 'FILL' 1;">skip_previous</span>
+</button>
+<button class="bg-primary text-black w-12 h-12 flex items-center justify-center hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="pause" data-weight="fill" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="skip_next" data-weight="fill" style="font-variation-settings: 'FILL' 1;">skip_next</span>
+</button>
+</div>
+</nav>
+</main>
+  <!-- Player bar -->
+  <div style="padding:16px 24px; background:#111; border-top:1px solid #222; display:flex; align-items:center; gap:16px;">
+    <div class="waveform-bars" aria-hidden="true">
+      <div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div>
+    </div>
+    <div style="flex:1; background:#1a1a1a; height:4px; border-radius:2px;">
+      <div style="width:35%; height:100%; background:var(--color-primary); border-radius:2px;"></div>
+    </div>
+    <span style="color:#888; font-size:12px; font-weight:700;">18:24 / 48:00</span>
+  </div>
+</div>
+
+<!-- PANEL: ABOUT -->
+<div id="panel-about" class="panel texture-bg" role="dialog" aria-modal="true" aria-label="About RadioWaves"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close About panel">✕</button>
+  <!-- Main Content Area -->
+<main class="ml-64 flex-1 h-full relative texture-bg flex items-end justify-center p-8">
+<!-- TopAppBar (Shared Component Overlay) -->
+<header class="absolute top-0 left-0 w-full flex justify-between items-center px-6 py-4 border-b-4 border-yellow-400 bg-black shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] z-40">
+<div class="flex items-center">
+<h2 class="text-2xl font-black text-yellow-400 font-headline uppercase tracking-tighter">RADIOWAVES</h2>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-zinc-600 hover:bg-yellow-400 hover:text-black p-2 transition-none flex items-center justify-center">
+<span class="material-symbols-outlined">sensors</span>
+</button>
+<button class="text-zinc-600 hover:bg-yellow-400 hover:text-black p-2 transition-none flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- About Panel Container -->
+<div class="w-full max-w-5xl h-[870px] bg-[#0d0d0d] border-t-4 border-l-4 border-r-4 border-primary-container relative z-10 p-12 overflow-y-auto flex flex-col shadow-[-8px_-8px_0px_0px_rgba(32,32,31,1)] mt-24">
+<!-- Close Action (Top Right) -->
+<button class="absolute top-6 right-6 bg-error text-white p-2 hover:bg-black hover:text-error transition-none border-2 border-error">
+<span class="material-symbols-outlined block" style="font-variation-settings: 'FILL' 1;">close</span>
+</button>
+<!-- Panel Header -->
+<div class="flex justify-between items-start mb-16 border-b-2 border-surface-container pb-8">
+<h2 class="font-headline font-black text-5xl md:text-7xl text-primary-container uppercase tracking-tighter leading-none w-3/4">THE ROOM IS LIVE</h2>
+<!-- ON AIR Badge -->
+<div class="bg-error text-white font-label font-bold uppercase text-xs px-4 py-2 flex items-center gap-2 border-2 border-white">
+<span class="w-2 h-2 bg-white block"></span>
+                    ON-AIR
+                </div>
+</div>
+<!-- Hosts Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+<!-- Host 1 -->
+<div class="bg-surface-container border-l-4 border-secondary-container p-6 relative">
+<!-- Sticky Note Decor -->
+<div class="absolute -top-3 -right-3 w-12 h-12 bg-primary-container transform rotate-6 border border-black z-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+<span class="text-black font-label text-[8px] font-bold uppercase text-center leading-tight">CH 1<br/>OP</span>
+</div>
+<div class="aspect-[3/4] bg-surface-dim border-2 border-secondary-container mb-4 overflow-hidden">
+<img alt="Head Broadcaster Alessandro in a dark studio setting with warm directional lighting" class="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-none" data-alt="Head Broadcaster Alessandro in a dark studio setting with warm directional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx-oYW-oGFl3W26XnDl3nLMAO6HJtfaWlgDRyNAfzuPwzKHKlMEwSh2vN7fM_-yQUf4TtMvatcMOuamxA93og10n4xxQF6zWfC9Oftpql6gcESdmcE9YuVA5qg3muEeQjrzzTRuJdjDd5S8qkk6XD8KtyduAif7hLhNBv_ypBbumIQKt4eINiNo4bF0Ze1Gm8cJWwFZSKUKBF_oqPqMh-T5ad8MONNPp8ogikSGeIZN_ANvPFLNQqGuqQoDJEVo-CSKrI8MuKQVaY"/>
+</div>
+<h3 class="font-headline font-bold text-3xl text-primary-container tracking-tight mb-1">ALESSANDRO</h3>
+<p class="font-label text-sm text-white uppercase tracking-widest font-bold">Head Broadcaster</p>
+</div>
+<!-- Host 2 -->
+<div class="bg-surface-container border-l-4 border-secondary-container p-6 relative mt-12 md:mt-0">
+<!-- Sticky Note Decor -->
+<div class="absolute -top-4 left-1/2 w-16 h-8 bg-error transform -rotate-3 border border-black z-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+<span class="text-white font-label text-[8px] font-bold uppercase text-center leading-tight">MUTE</span>
+</div>
+<div class="aspect-[3/4] bg-surface-dim border-2 border-secondary-container mb-4 overflow-hidden">
+<img alt="Sound Director Marta intensely focused at a mixing board, dramatic shadow lighting" class="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-none" data-alt="Sound Director Marta intensely focused at a mixing board, dramatic shadow lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ3v7mRz29sBeieJGfc84jiqHwyENMhuViWr2G8FectuEs2KXCAZbrau-LNV5IIzz6wmMMHmAzLnpKYuMFkpD8A0kjeQQrlwRxFKRSckTa0XHm76QoKW43fJ7tSKmw9G5Jy1LPxACJmzPn6HOBYRYiqDw4Gb9agphk9laPQaCKGKO2-2OH-ovwXciO2F7MJtNgv_iGqsVvBddKUjXOSr9SpSKcPv8ElBOTgvmo14Y5MQwn2mgGvh0vbUG5H6jYpfqwV4-1IZWRowQ"/>
+</div>
+<h3 class="font-headline font-bold text-3xl text-primary-container tracking-tight mb-1">MARTA</h3>
+<p class="font-label text-sm text-white uppercase tracking-widest font-bold">Sound Director</p>
+</div>
+</div>
+<!-- Mission Statement -->
+<div class="bg-primary-container p-8 border-4 border-black relative mb-8">
+<div class="absolute top-0 left-0 w-full h-2 bg-black"></div>
+<h4 class="font-headline font-black text-black text-2xl md:text-4xl leading-tight uppercase tracking-tighter">
+                    "We built this room for you. Every dial, every tape, every signal — yours to discover. Find your frequency."
+                </h4>
+</div>
+<div class="mt-auto pt-8 flex justify-end">
+<p class="font-label text-xs text-outline-variant font-bold uppercase tracking-[0.2em]">END OF TRANSMISSION // 00:00:00</p>
+</div>
+</div>
+</main>
+</div>
+
+<!-- PANEL: FEATURES -->
+<div id="panel-features" class="panel" role="dialog" aria-modal="true" aria-label="Features"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close Features panel">✕</button>
+  <!-- TopAppBar Shell Implementation (from JSON intent, modified for context) -->
+
+<main class="w-full max-w-7xl mx-auto px-6 mt-24 h-[870px] flex flex-col">
+<!-- Header -->
+<div class="mb-12 flex justify-between items-end border-b-4 border-primary-fixed pb-4">
+<h1 class="font-syne font-extrabold text-7xl uppercase tracking-tighter text-primary-fixed leading-none">WHAT'S ON AIR</h1>
+<div class="bg-surface-container px-4 py-2 font-syne font-bold text-primary-fixed text-sm uppercase tracking-widest">
+                System Status: Active
+            </div>
+</div>
+<!-- Features Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow">
+<!-- Card 1 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-[#FF2200] group-hover:text-primary-fixed transition-colors">sensors</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_01</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">Live Broadcasting</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    Real-time transmission protocols active. Monitor live signals and audio streams directly from the source hardware. High fidelity output.
+                </p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-primary-fixed">album</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_02</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">Episode Archive</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    Access historical transmissions. Indexed database of previous broadcasts stored in high-density archival formats for immediate retrieval.
+                </p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-primary-fixed">calendar_today</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_03</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">Schedule</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    Upcoming transmission timetable. Synchronize your receivers with planned broadcast events to ensure maximum signal acquisition.
+                </p>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-primary-fixed">play_circle</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_04</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">On-Demand</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    Initiate playback sequences instantly. Buffered streams ready for immediate consumption across all compatible output channels.
+                </p>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-primary-fixed">graphic_eq</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_05</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">Multi-Show</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    Multiplexed signal routing. Monitor multiple broadcasts simultaneously with advanced waveform analysis and frequency splitting.
+                </p>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-container p-6 border-l-4 border-transparent hover:border-primary-fixed transition-all duration-150 group cursor-pointer flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(245,230,66,0)] hover:shadow-[4px_4px_0px_0px_rgba(245,230,66,1)] h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-surface-bright/20 transform translate-x-8 -translate-y-8 rotate-45 group-hover:bg-primary-fixed/20 transition-colors"></div>
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-5xl text-primary-fixed">notifications</span>
+<span class="font-syne text-xs uppercase tracking-widest text-outline">CH_06</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl uppercase tracking-tight text-white mb-4">Notifications</h2>
+</div>
+<p class="font-body text-secondary-container text-sm leading-relaxed mt-4 pt-4 border-t border-surface-bright">
+                    System alerts and signal intercepts. Configure parameters for priority broadcast interruptions and emergency transmission protocols.
+                </p>
+</div>
+</div>
+</main>
+</div>
+
+<!-- PANEL: CONTACT -->
+<div id="panel-contact" class="panel" role="dialog" aria-modal="true" aria-label="Contact — dial in"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close Contact panel">✕</button>
+  <!-- Contact Panel Overlay/Slide-up -->
+<main class="w-full h-[870px] bg-surface-container-lowest border-t-4 border-primary-yellow relative flex flex-col shadow-[0px_-8px_0px_0px_rgba(245,230,66,1)]">
+<!-- Header Section -->
+<header class="flex justify-between items-start p-8 border-b-8 border-surface-container-high bg-black">
+<h1 class="text-6xl md:text-8xl font-headline text-primary-yellow uppercase tracking-tighter leading-none m-0">
+                DIAL IN
+            </h1>
+
+</header>
+<!-- Two Column Layout -->
+<div class="flex-1 flex flex-col md:flex-row overflow-y-auto bg-black p-8 md:p-16 gap-16 md:gap-24">
+<!-- Left Column: Contact Form -->
+<section class="flex-1 max-w-2xl">
+<form class="flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-widest text-outline" for="name">Name</label>
+<input class="industrial-input" id="name" name="name" placeholder="ENTER IDENTIFIER" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-widest text-outline" for="email">Email</label>
+<input class="industrial-input" id="email" name="email" placeholder="ENTER FREQUENCY" type="email"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-widest text-outline" for="message">Message</label>
+<textarea class="industrial-input resize-none" id="message" name="message" placeholder="TRANSMIT SIGNAL" rows="5"></textarea>
+</div>
+<div class="pt-8">
+
+</div>
+</form>
+</section>
+<!-- Right Column: Contact Details -->
+<aside class="flex-1 flex flex-col gap-16">
+<!-- Direct Email -->
+<div class="bg-surface-container p-8 shadow-[4px_4px_0px_0px_rgba(245,230,66,0.5)]">
+<h3 class="font-label text-sm uppercase tracking-widest text-outline mb-4">Direct Channel</h3>
+<a class="font-headline text-3xl md:text-4xl text-primary-yellow hover:text-white transition-colors duration-200 break-all" href="mailto:transmission@radiowaves.com">
+                        TRANSMISSION<br/>@RADIOWAVES.COM
+                    </a>
+</div>
+<!-- Social Links -->
+<div class="bg-surface-container p-8 shadow-[4px_4px_0px_0px_rgba(245,230,66,0.5)]">
+<h3 class="font-label text-sm uppercase tracking-widest text-outline mb-6">Network Nodes</h3>
+<div class="flex flex-wrap gap-4">
+<a aria-label="Twitter" class="w-16 h-16 bg-black border-2 border-primary-yellow flex items-center justify-center text-primary-yellow hover:bg-primary-yellow hover:text-black transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-3xl">alternate_email</span>
+</a>
+<a aria-label="Instagram" class="w-16 h-16 bg-black border-2 border-primary-yellow flex items-center justify-center text-primary-yellow hover:bg-primary-yellow hover:text-black transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-3xl">photo_camera</span>
+</a>
+<a aria-label="Spotify" class="w-16 h-16 bg-black border-2 border-primary-yellow flex items-center justify-center text-primary-yellow hover:bg-primary-yellow hover:text-black transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-3xl">graphic_eq</span>
+</a>
+<a aria-label="SoundCloud" class="w-16 h-16 bg-black border-2 border-primary-yellow flex items-center justify-center text-primary-yellow hover:bg-primary-yellow hover:text-black transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-3xl">cloud</span>
+</a>
+</div>
+</div>
+<!-- Press & Bookings -->
+<div class="bg-surface-container p-8 border-l-4 border-accent-red shadow-[4px_4px_0px_0px_rgba(255,34,0,0.5)]">
+<h2 class="font-headline text-2xl text-white uppercase mb-4">Press &amp; Bookings</h2>
+<p class="font-body text-secondary-fixed-dim text-lg mb-8 max-w-md">
+                        For all press inquiries, festival bookings, and high-frequency transmissions, route your signal here.
+                    </p>
+<a class="inline-flex items-center gap-2 font-headline text-xl text-primary-yellow border-b-2 border-primary-yellow pb-1 hover:text-white hover:border-white transition-colors duration-200 uppercase tracking-wide" href="#">
+                        GET IN TOUCH
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 700;">arrow_forward</span>
+</a>
+</div>
+</aside>
+</div>
+</main>
+</div>
+
+<!-- PANEL: SCHEDULE -->
+<div id="panel-schedule" class="panel" role="dialog" aria-modal="true" aria-label="Schedule — on air this week"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close Schedule panel">✕</button>
+  <!-- Main Content Area - Schedule Panel -->
+<main class="flex-grow flex items-end justify-center px-0 md:px-8 pb-[80px] md:pb-8 h-full">
+<!-- The Sliding Panel Container -->
+<div class="w-full max-w-7xl bg-[#0e0e0e] h-[870px] flex flex-col border-t-4 border-[#F5E642] relative shadow-2xl">
+<!-- Panel Header -->
+<div class="flex justify-between items-center bg-[#1a1a1a] p-6 border-b-2 border-black">
+<h1 class="font-syne font-extrabold text-[#F5E642] text-3xl md:text-5xl uppercase tracking-tighter">ON AIR THIS WEEK</h1>
+
+</div>
+<!-- Schedule Grid Container -->
+<div class="flex-grow overflow-auto no-scrollbar bg-black p-4 md:p-8">
+<div class="grid grid-cols-[60px_1fr] md:grid-cols-[80px_repeat(7,1fr)] gap-2 min-w-[800px] md:min-w-0">
+<!-- Top Row: Days (Empty top-left corner) -->
+<div class="bg-black"></div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">MON</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">TUE</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">WED</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">THU</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">FRI</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">SAT</div>
+<div class="bg-[#1a1a1a] text-center py-3 text-[#e5e2e1] font-bold text-sm tracking-widest uppercase border-b-2 border-black">SUN</div>
+<!-- 08:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest">08:00</div>
+<div class="bg-[#F5E642] row-span-2 p-3 text-black font-syne font-bold flex flex-col justify-start relative group cursor-pointer hover:bg-white transition-colors border-r-2 border-b-2 border-black">
+<span class="text-xs font-grotesk tracking-widest uppercase mb-1">08:00 - 10:00</span>
+<span class="text-lg leading-tight uppercase">Morning Static</span>
+</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#F5E642] row-span-5 p-3 text-black font-syne font-bold flex flex-col justify-start relative group cursor-pointer hover:bg-white transition-colors border-r-2 border-b-2 border-black">
+<span class="text-xs font-grotesk tracking-widest uppercase mb-1">08:00 - 13:00</span>
+<span class="text-lg md:text-xl leading-tight uppercase">Weekend Broadcast</span>
+</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- 09:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest">09:00</div>
+<!-- Mon (occupied by Morning Static) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#FFBF00] row-span-2 p-3 text-black font-syne font-bold flex flex-col justify-start relative group cursor-pointer hover:bg-white transition-colors border-r-2 border-b-2 border-black">
+<span class="text-xs font-grotesk tracking-widest uppercase mb-1">09:00 - 11:00</span>
+<span class="text-lg leading-tight uppercase">The Signal</span>
+</div>
+<!-- Sat (occupied) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- 10:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest relative">
+                        10:00
+                        <div class="absolute -right-2 w-2 h-2 bg-[#FF2200] animate-pulse"></div>
+</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20 relative"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#FF2200] row-span-2 p-3 text-white font-syne font-bold flex flex-col justify-start relative group cursor-pointer hover:bg-[#F5E642] hover:text-black transition-colors border-r-2 border-b-2 border-black">
+<div class="absolute top-2 right-2 flex items-center gap-1 bg-black text-[#FF2200] px-2 py-0.5 text-[10px] font-grotesk font-bold tracking-widest uppercase border border-[#FF2200]">
+<div class="w-1.5 h-1.5 bg-[#FF2200] rounded-none animate-pulse"></div>
+                            LIVE
+                        </div>
+<span class="text-xs font-grotesk tracking-widest uppercase mb-1">10:00 - 12:00</span>
+<span class="text-lg leading-tight uppercase mt-4">Midweek Frequency</span>
+</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- Fri (occupied) -->
+<!-- Sat (occupied) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- 11:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest">11:00</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- Wed (occupied) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- Sat (occupied) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- 12:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest">12:00</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- Sat (occupied) -->
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<!-- 13:00 Row -->
+<div class="bg-black flex items-center justify-center text-[#FFBF00] font-bold text-xs md:text-sm tracking-widest">13:00</div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+<div class="bg-[#20201f] border-r-2 border-b-2 border-black p-2 h-20"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-stretch bg-black border-none block-contrast bg-[#1a1a1a] z-50 rounded-none border-t-0 flat no shadows h-20">
+<a class="flex flex-col items-center justify-center text-[#F5E642] px-6 py-3 w-full hover:bg-[#393939] transition-none" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">radio</span>
+<span class="font-['Space_Grotesk'] font-bold text-[10px] uppercase tracking-widest">LIVE</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#F5E642] text-black px-6 py-3 w-full hover:bg-[#393939] hover:text-[#F5E642] transition-none" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" style="font-variation-settings: 'FILL' 1;">calendar_view_week</span>
+<span class="font-['Space_Grotesk'] font-bold text-[10px] uppercase tracking-widest">SCHEDULE</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#F5E642] px-6 py-3 w-full hover:bg-[#393939] transition-none" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">podcasts</span>
+<span class="font-['Space_Grotesk'] font-bold text-[10px] uppercase tracking-widest">STATIONS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#F5E642] px-6 py-3 w-full hover:bg-[#393939] transition-none" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">inventory_2</span>
+<span class="font-['Space_Grotesk'] font-bold text-[10px] uppercase tracking-widest">ARCHIVE</span>
+</a>
+</nav>
+</div>
+
+<!-- PANEL: ARCHIVE (hand-authored — Stitch skipped) -->
+<div id="panel-archive" class="panel" role="dialog" aria-modal="true" aria-label="Archive — the vault"
+     aria-hidden="true" tabindex="-1">
+  <button class="panel-close-btn" onclick="closePanel()" aria-label="Close Archive panel">✕</button>
+  <div style="padding:32px 40px; min-height:100%;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:4px solid #F5E642; padding-bottom:16px; margin-bottom:32px;">
+      <h1 style="font-size:clamp(3rem,7vw,6rem); font-weight:800; color:#F5E642; text-transform:uppercase; letter-spacing:-0.02em; line-height:1;">THE VAULT</h1>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <input placeholder="SEARCH ARCHIVE" style="background:#1a1a1a; border:1px solid rgba(245,230,66,0.3); color:#fff; padding:10px 16px; font-family:Syne,sans-serif; font-size:13px; font-weight:700; border-radius:4px; width:220px;" type="search" aria-label="Search archive">
+        <select style="background:#1a1a1a; border:1px solid rgba(245,230,66,0.3); color:#F5E642; padding:10px 14px; font-family:Syne,sans-serif; font-weight:700; font-size:12px; border-radius:4px;" aria-label="Filter by season">
+          <option>ALL SEASONS</option>
+          <option>SEASON 4</option>
+          <option>SEASON 3</option>
+          <option>SEASON 2</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:20px;">
+      <!-- EP_401 -->
+      <article class="cassette-card" aria-label="Episode EP_401: Season 4 Opener">
+        <div class="cassette-reel" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#1a1a1a" stroke="#F5E642" stroke-width="2"/><circle cx="26" cy="26" r="8" fill="#0d0d0d" stroke="#F5E642" stroke-width="1.5"/><circle cx="26" cy="26" r="3" fill="#F5E642"/><line x1="26" y1="18" x2="26" y2="8" stroke="#F5E642" stroke-width="1.5"/><line x1="33" y1="21" x2="41" y2="14" stroke="#F5E642" stroke-width="1.5"/><line x1="19" y1="21" x2="11" y2="14" stroke="#F5E642" stroke-width="1.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="cassette-code">EP_401</span>
+            <span class="rec-badge">REC</span>
+          </div>
+          <div class="cassette-title">Season 4 Opener</div>
+          <div class="cassette-meta">JAN 2024 &nbsp;·&nbsp; 88 MIN</div>
+        </div>
+        <button style="background:none; border:1px solid rgba(245,230,66,0.3); color:#F5E642; width:36px; height:36px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;" aria-label="Play EP_401">
+          <span class="material-symbols-outlined" style="font-size:20px;">play_arrow</span>
+        </button>
+      </article>
+      <!-- EP_402 -->
+      <article class="cassette-card" aria-label="Episode EP_402: Frequency Test">
+        <div class="cassette-reel" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#1a1a1a" stroke="#FF8C00" stroke-width="2"/><circle cx="26" cy="26" r="8" fill="#0d0d0d" stroke="#FF8C00" stroke-width="1.5"/><circle cx="26" cy="26" r="3" fill="#FF8C00"/><line x1="26" y1="18" x2="26" y2="8" stroke="#FF8C00" stroke-width="1.5"/><line x1="33" y1="21" x2="41" y2="14" stroke="#FF8C00" stroke-width="1.5"/><line x1="19" y1="21" x2="11" y2="14" stroke="#FF8C00" stroke-width="1.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="cassette-code">EP_402</span>
+            <span class="rec-badge">REC</span>
+          </div>
+          <div class="cassette-title">Frequency Test</div>
+          <div class="cassette-meta">FEB 2024 &nbsp;·&nbsp; 72 MIN</div>
+        </div>
+        <button style="background:none; border:1px solid rgba(245,230,66,0.3); color:#F5E642; width:36px; height:36px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;" aria-label="Play EP_402">
+          <span class="material-symbols-outlined" style="font-size:20px;">play_arrow</span>
+        </button>
+      </article>
+      <!-- EP_403 -->
+      <article class="cassette-card" aria-label="Episode EP_403: Static Hours">
+        <div class="cassette-reel" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#1a1a1a" stroke="#F5E642" stroke-width="2"/><circle cx="26" cy="26" r="8" fill="#0d0d0d" stroke="#F5E642" stroke-width="1.5"/><circle cx="26" cy="26" r="3" fill="#F5E642"/><line x1="26" y1="18" x2="26" y2="8" stroke="#F5E642" stroke-width="1.5"/><line x1="33" y1="21" x2="41" y2="14" stroke="#F5E642" stroke-width="1.5"/><line x1="19" y1="21" x2="11" y2="14" stroke="#F5E642" stroke-width="1.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="cassette-code">EP_403</span>
+            <span class="rec-badge">REC</span>
+          </div>
+          <div class="cassette-title">Static Hours</div>
+          <div class="cassette-meta">MAR 2024 &nbsp;·&nbsp; 91 MIN</div>
+        </div>
+        <button style="background:none; border:1px solid rgba(245,230,66,0.3); color:#F5E642; width:36px; height:36px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;" aria-label="Play EP_403">
+          <span class="material-symbols-outlined" style="font-size:20px;">play_arrow</span>
+        </button>
+      </article>
+      <!-- EP_404 -->
+      <article class="cassette-card" aria-label="Episode EP_404: Last Signal">
+        <div class="cassette-reel" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#1a1a1a" stroke="#FF2200" stroke-width="2"/><circle cx="26" cy="26" r="8" fill="#0d0d0d" stroke="#FF2200" stroke-width="1.5"/><circle cx="26" cy="26" r="3" fill="#FF2200"/><line x1="26" y1="18" x2="26" y2="8" stroke="#FF2200" stroke-width="1.5"/><line x1="33" y1="21" x2="41" y2="14" stroke="#FF2200" stroke-width="1.5"/><line x1="19" y1="21" x2="11" y2="14" stroke="#FF2200" stroke-width="1.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="cassette-code">EP_404</span>
+            <span class="rec-badge">REC</span>
+          </div>
+          <div class="cassette-title">Last Signal</div>
+          <div class="cassette-meta">APR 2024 &nbsp;·&nbsp; 66 MIN</div>
+        </div>
+        <button style="background:none; border:1px solid rgba(245,230,66,0.3); color:#F5E642; width:36px; height:36px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;" aria-label="Play EP_404">
+          <span class="material-symbols-outlined" style="font-size:20px;">play_arrow</span>
+        </button>
+      </article>
+    </div>
+    <p style="margin-top:40px; color:#444; font-size:12px; font-weight:700; letter-spacing:0.1em;">
+      RADIOWAVES ARCHIVE &nbsp;·&nbsp; ALL SEASONS &nbsp;·&nbsp; © 2024 RADIOWAVES
+    </p>
+  </div>
+</div>
+
+<!-- MOBILE NAV FALLBACK -->
+<nav id="mobile-nav" aria-label="Mobile navigation — room objects">
+  <div id="logo" style="position:absolute; top:24px; left:24px; display:flex; align-items:center; gap:10px; color:#F5E642;">
+    <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+      <circle cx="16" cy="16" r="4" fill="#F5E642"/>
+      <path d="M10 16 Q10 8 16 8 Q22 8 22 16" stroke="#F5E642" stroke-width="2" fill="none"/>
+      <path d="M6 16 Q6 4 16 4 Q26 4 26 16" stroke="#FF8C00" stroke-width="1.5" fill="none"/>
+      <line x1="16" y1="20" x2="16" y2="28" stroke="#F5E642" stroke-width="2"/>
+    </svg>
+    <span style="font-weight:800; font-size:16px; text-transform:uppercase; letter-spacing:-0.01em;">RadioWaves</span>
+  </div>
+  <div onclick="openPanel('episodes')" class="mobile-nav-card" role="button" tabindex="0" aria-label="Episodes">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">radio</span>
+    <div><div class="mnc-label">Episodes</div><div class="mnc-desc">Vintage radio → tune in</div></div>
+  </div>
+  <div onclick="openPanel('about')" class="mobile-nav-card" role="button" tabindex="0" aria-label="About">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">push_pin</span>
+    <div><div class="mnc-label">About</div><div class="mnc-desc">Cork board → our story</div></div>
+  </div>
+  <div onclick="openPanel('features')" class="mobile-nav-card" role="button" tabindex="0" aria-label="Features">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">album</span>
+    <div><div class="mnc-label">Features</div><div class="mnc-desc">Tape deck → what's on air</div></div>
+  </div>
+  <div onclick="openPanel('contact')" class="mobile-nav-card" role="button" tabindex="0" aria-label="Contact">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">phone_in_talk</span>
+    <div><div class="mnc-label">Contact</div><div class="mnc-desc">Rotary phone → dial in</div></div>
+  </div>
+  <div onclick="openPanel('schedule')" class="mobile-nav-card" role="button" tabindex="0" aria-label="Schedule">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">calendar_today</span>
+    <div><div class="mnc-label">Schedule</div><div class="mnc-desc">Wall calendar → on air this week</div></div>
+  </div>
+  <div onclick="openPanel('archive')" class="mobile-nav-card" role="button" tabindex="0" aria-label="Archive">
+    <span class="material-symbols-outlined mnc-icon" aria-hidden="true">inventory_2</span>
+    <div><div class="mnc-label">Archive</div><div class="mnc-desc">Filing cabinet → the vault</div></div>
+  </div>
+</nav>
+
+<!-- Main content landmark (accessibility) -->
+<main id="main-content" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);" tabindex="-1">
+  <p>RadioWaves — interactive 3D radio station. Your frequency, always on.</p>
+</main>
+
+<!-- ─────────────── IMPORTMAP + THREE.JS ─────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+
+/* ────────────────────────────────────────
+   STATE  (Zustand-inspired vanilla module)
+──────────────────────────────────────── */
+const state = {
+  activePanel: null,
+  hoveredObj: null,
+  isReady: false,
+  reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  cameraTarget: { pos: new THREE.Vector3(0, 1.6, 4.5), look: new THREE.Vector3(0, 1.2, 0) },
+  cameraDefault: { pos: new THREE.Vector3(0, 1.6, 4.5), look: new THREE.Vector3(0, 1.2, 0) },
+};
+
+// Mouse parallax — smooth camera drift following cursor
+const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
+
+/* ────────────────────────────────────────
+   RENDERER
+──────────────────────────────────────── */
+RectAreaLightUniformsLib.init();
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.8;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0c0906);
+scene.fog = new THREE.FogExp2(0x0c0906, 0.032);
+
+const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.05, 80);
+camera.position.set(0, 1.6, 4.5);
+camera.lookAt(0, 1.2, 0);
+
+/* ────────────────────────────────────────
+   MATERIALS (shared)
+──────────────────────────────────────── */
+const MAT = {
+  floor:   new THREE.MeshStandardMaterial({ color: 0x1e1a0e, roughness: 0.82, metalness: 0.05 }),
+  wall:    new THREE.MeshStandardMaterial({ color: 0x1c1814, roughness: 0.92, metalness: 0 }),
+  desk:    new THREE.MeshStandardMaterial({ color: 0x4a2c14, roughness: 0.7, metalness: 0.1 }),
+  deskTop: new THREE.MeshStandardMaterial({ color: 0x38200c, roughness: 0.6, metalness: 0.15 }),
+  radio:   new THREE.MeshStandardMaterial({ color: 0x4d3510, roughness: 0.75, metalness: 0.1 }),
+  phone:   new THREE.MeshStandardMaterial({ color: 0x252525, roughness: 0.8, metalness: 0.2 }),
+  cork:    new THREE.MeshStandardMaterial({ color: 0x9B7920, roughness: 0.9, metalness: 0 }),
+  paper:   new THREE.MeshStandardMaterial({ color: 0xede5cc, roughness: 0.95, metalness: 0 }),
+  metal:   new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.35, metalness: 0.85 }),
+  yellow:  new THREE.MeshStandardMaterial({ color: 0xF5E642, roughness: 0.6, metalness: 0.05, emissive: 0xF5E642, emissiveIntensity: 0.2 }),
+  red:     new THREE.MeshStandardMaterial({ color: 0xFF2200, roughness: 0.5, metalness: 0.1, emissive: 0xFF2200, emissiveIntensity: 0.5 }),
+  cabinet: new THREE.MeshStandardMaterial({ color: 0x2e2e2e, roughness: 0.65, metalness: 0.45 }),
+  winFrame: new THREE.MeshStandardMaterial({ color: 0x7a6040, roughness: 0.75, metalness: 0.05 }),
+  foam:    new THREE.MeshStandardMaterial({ color: 0x1a1a16, roughness: 0.98, metalness: 0 }),
+};
+
+/* ────────────────────────────────────────
+   ROOM GEOMETRY
+──────────────────────────────────────── */
+// Floor
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 10), MAT.floor);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// Back wall
+const backWall = new THREE.Mesh(new THREE.PlaneGeometry(14, 7), MAT.wall);
+backWall.position.set(0, 3.5, -4);
+backWall.receiveShadow = true;
+scene.add(backWall);
+
+// Left wall
+const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(10, 7), MAT.wall);
+leftWall.rotation.y = Math.PI / 2;
+leftWall.position.set(-6, 3.5, -1);
+leftWall.receiveShadow = true;
+scene.add(leftWall);
+
+// Right wall
+const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(10, 7), MAT.wall);
+rightWall.rotation.y = -Math.PI / 2;
+rightWall.position.set(6, 3.5, -1);
+rightWall.receiveShadow = true;
+scene.add(rightWall);
+
+// Ceiling
+const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(14, 10), MAT.wall);
+ceiling.rotation.x = Math.PI / 2;
+ceiling.position.set(0, 7, -1);
+scene.add(ceiling);
+
+/* ── WINDOW (left wall, sunlight source) ── */
+// Outside daylight glow — visible through opening
+const outsideGlowMat = new THREE.MeshStandardMaterial({
+  color: 0xfff8d0, emissive: 0xfff0b0, emissiveIntensity: 3.5, side: THREE.FrontSide
+});
+const outsideGlow = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.0), outsideGlowMat);
+outsideGlow.rotation.y = Math.PI / 2;
+outsideGlow.position.set(-6.04, 4.35, -1.5);
+scene.add(outsideGlow);
+// Glass pane
+const glassMat = new THREE.MeshStandardMaterial({
+  color: 0xd0e8ff, emissive: 0xa8ccff, emissiveIntensity: 0.6,
+  transparent: true, opacity: 0.22, roughness: 0, metalness: 0.15
+});
+const wGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.32, 1.78), glassMat);
+wGlass.rotation.y = Math.PI / 2;
+wGlass.position.set(-5.92, 4.35, -1.5);
+scene.add(wGlass);
+// Window frame bars
+[
+  [0.06, 0.08, 2.5,  -5.96, 5.28, -1.5 ],  // top bar
+  [0.06, 0.08, 2.5,  -5.96, 3.42, -1.5 ],  // bottom bar
+  [0.06, 1.94, 0.08, -5.96, 4.35, -2.72],  // left bar
+  [0.06, 1.94, 0.08, -5.96, 4.35, -0.28],  // right bar
+  [0.05, 0.06, 2.5,  -5.95, 4.35, -1.5 ],  // horizontal cross
+  [0.05, 1.94, 0.05, -5.95, 4.35, -1.5 ],  // vertical cross
+].forEach(([w,h,d,x,y,z]) => scene.add(makeBox(w,h,d, MAT.winFrame, x,y,z)));
+// Window sill
+scene.add(makeBox(0.18, 0.06, 2.6, MAT.winFrame, -5.9, 3.38, -1.5));
+
+/* ── ACOUSTIC FOAM PANELS (back wall) ── */
+[[-4.5,3.5],[-3,3.5],[-1.5,3.5],[0,3.5],[1.5,3.5],[3,3.5],[4.5,3.5],
+ [-4,2.4],[-2,2.4],[0.5,2.4],[2.5,2.4],[4,2.4],
+ [-3,1.3],[-1,1.3],[1,1.3],[3,1.3]].forEach(([x,y]) => {
+  scene.add(makeBox(0.88, 0.88, 0.06, MAT.foam, x, y, -3.96));
+});
+
+/* ────────────────────────────────────────
+   DESK
+──────────────────────────────────────── */
+function makeBox(w, h, d, mat, x, y, z, rx=0, ry=0, rz=0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.rotation.set(rx, ry, rz);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+
+const deskGroup = new THREE.Group();
+// Desktop surface
+deskGroup.add(makeBox(7, 0.07, 1.8, MAT.deskTop, 0, 0, 0));
+// Desk body
+deskGroup.add(makeBox(7, 0.85, 1.8, MAT.desk, 0, -0.46, 0));
+// Legs
+[-3.1, 3.1].forEach(x => [-0.75, 0.75].forEach(z =>
+  deskGroup.add(makeBox(0.08, 1.1, 0.08, MAT.desk, x, -0.95, z))
+));
+deskGroup.position.set(0, 1.12, 2);
+scene.add(deskGroup);
+
+/* ────────────────────────────────────────
+   INTERACTIVE OBJECT FACTORY
+──────────────────────────────────────── */
+const interactables = [];
+
+function registerObject(group, panelId, label, camPos, camLook) {
+  group.userData = { panelId, label, camPos: new THREE.Vector3(...camPos), camLook: new THREE.Vector3(...camLook) };
+  group.traverse(c => { if (c.isMesh) { c.userData.panelId = panelId; c.userData.parentGroup = group; } });
+  interactables.push(group);
+}
+
+/* ────────────────────────────────────────
+   1. VINTAGE RADIO  →  Episodes
+──────────────────────────────────────── */
+const radioGroup = new THREE.Group();
+// Body
+const radioBody = makeBox(0.72, 0.42, 0.36, MAT.radio, 0, 0, 0);
+radioGroup.add(radioBody);
+// Speaker grill (darker inset)
+radioGroup.add(makeBox(0.44, 0.28, 0.01, new THREE.MeshStandardMaterial({ color: 0x1a0a00, roughness: 1 }), -0.05, 0, 0.185));
+// Dial
+const dialMat = MAT.yellow.clone(); dialMat.emissiveIntensity = 0.4;
+radioGroup.add(makeBox(0.06, 0.06, 0.02, dialMat, 0.25, 0.04, 0.185));
+// Tuning line
+radioGroup.add(makeBox(0.28, 0.02, 0.01, new THREE.MeshStandardMaterial({ color: 0x553300 }), -0.05, 0.14, 0.185));
+// Antenna
+const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.45), MAT.metal);
+ant.position.set(0.3, 0.35, 0); ant.rotation.z = 0.25;
+radioGroup.add(ant);
+// Knobs
+[-0.28, -0.18].forEach((x, i) => {
+  const k = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.04, 12), MAT.metal);
+  k.rotation.x = Math.PI/2; k.position.set(x, -0.14, 0.185);
+  radioGroup.add(k);
+});
+// Glow light inside radio
+const radioGlow = new THREE.PointLight(0xF5E642, 0, 0.8);
+radioGlow.position.set(0, 0, 0);
+radioGroup.add(radioGlow);
+radioGroup.position.set(-2.0, 1.185, 2);
+scene.add(radioGroup);
+registerObject(radioGroup, 'episodes', 'EPISODES', [-2, 1.6, 3], [-2, 1.2, 1.5]);
+
+/* ────────────────────────────────────────
+   2. ROTARY PHONE  →  Contact
+──────────────────────────────────────── */
+const phoneGroup = new THREE.Group();
+// Base
+phoneGroup.add(makeBox(0.38, 0.08, 0.5, MAT.phone, 0, 0, 0));
+// Body
+phoneGroup.add(makeBox(0.32, 0.1, 0.42, MAT.phone, 0, 0.09, 0));
+// Dial disc
+const dialDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.015, 16), MAT.metal);
+dialDisc.position.set(0, 0.15, 0);
+phoneGroup.add(dialDisc);
+// Finger holes in dial
+for(let i=0;i<8;i++) {
+  const angle = (i/8)*Math.PI*2;
+  const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.02, 8), new THREE.MeshStandardMaterial({color:0x080808}));
+  hole.position.set(Math.cos(angle)*0.08, 0.16, Math.sin(angle)*0.08);
+  phoneGroup.add(hole);
+}
+// Handset
+const handset = new THREE.Group();
+handset.add(makeBox(0.1, 0.05, 0.34, MAT.phone, 0, 0, 0));
+handset.add(makeBox(0.07, 0.04, 0.07, MAT.phone, 0, 0.02, 0.15));  // earpiece
+handset.add(makeBox(0.07, 0.04, 0.07, MAT.phone, 0, 0.02, -0.15)); // mouthpiece
+handset.rotation.z = 0.3;
+handset.position.set(0.12, 0.28, 0);
+phoneGroup.add(handset);
+phoneGroup.position.set(2.2, 1.155, 2);
+scene.add(phoneGroup);
+registerObject(phoneGroup, 'contact', 'CONTACT', [2.2, 1.6, 3.2], [2.2, 1.2, 1.5]);
+
+/* ────────────────────────────────────────
+   3. CORK BOARD  →  About
+──────────────────────────────────────── */
+const corkGroup = new THREE.Group();
+// Frame
+corkGroup.add(makeBox(2.4, 1.6, 0.04, new THREE.MeshStandardMaterial({color:0x3a2206, roughness:0.8}), 0, 0, 0));
+// Cork surface
+corkGroup.add(makeBox(2.18, 1.38, 0.025, MAT.cork, 0, 0, 0.015));
+// Pinned notes (colored rects)
+const noteColors = [0xF5E642, 0xFF8C00, 0xf0ece0, 0xFF2200];
+[[-0.7, 0.4], [0.3, 0.35], [-0.3, -0.2], [0.7, -0.1], [-0.8, -0.3], [0.1, 0.1]].forEach(([x,y], i) => {
+  const noteMat = new THREE.MeshStandardMaterial({color: noteColors[i%4], roughness:0.9});
+  corkGroup.add(makeBox(0.3, 0.22, 0.01, noteMat, x, y, 0.035));
+});
+// Red string lines
+[0, 1, 2].forEach(i => {
+  const pts = [new THREE.Vector3(-0.7+i*0.5, 0.4-i*0.2, 0.04), new THREE.Vector3(0.3+i*0.2, 0.1-i*0.15, 0.04)];
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:0xFF2200}));
+  corkGroup.add(line);
+});
+corkGroup.position.set(0, 2.7, -3.97);
+scene.add(corkGroup);
+registerObject(corkGroup, 'about', 'ABOUT', [0, 2.5, 0], [0, 2.7, -4]);
+
+/* ────────────────────────────────────────
+   4. TAPE DECK  →  Features
+──────────────────────────────────────── */
+const tapeGroup = new THREE.Group();
+// Main body
+tapeGroup.add(makeBox(0.65, 0.22, 0.4, MAT.metal, 0, 0, 0));
+// Cassette slot
+tapeGroup.add(makeBox(0.35, 0.04, 0.26, new THREE.MeshStandardMaterial({color:0x080808}), 0, 0.04, 0.08));
+// Cassette visible inside
+tapeGroup.add(makeBox(0.3, 0.03, 0.2, new THREE.MeshStandardMaterial({color:0x1a1a1a}), 0, 0.04, 0.08));
+// Reels
+[-0.07, 0.07].forEach(x => {
+  const reel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.025, 12), new THREE.MeshStandardMaterial({color:0xF5E642, roughness:0.5}));
+  reel.rotation.x = Math.PI/2; reel.position.set(x, 0.04, 0.08);
+  tapeGroup.add(reel);
+});
+// Buttons row
+['#FF2200','#F5E642','#F5E642','#555','#555'].forEach((col, i) => {
+  const btnMat = new THREE.MeshStandardMaterial({color: parseInt(col.replace('#','0x')), roughness:0.6});
+  tapeGroup.add(makeBox(0.045, 0.025, 0.04, btnMat, -0.2+i*0.1, -0.075, 0.19));
+});
+// VU meter bar (green-ish)
+tapeGroup.add(makeBox(0.35, 0.03, 0.01, new THREE.MeshStandardMaterial({color:0x3d7a4a, emissive:0x3d7a4a, emissiveIntensity:0.5}), 0, 0.085, 0.2));
+tapeGroup.position.set(-0.6, 1.19, 2);
+scene.add(tapeGroup);
+registerObject(tapeGroup, 'features', 'FEATURES', [-0.6, 1.6, 3], [-0.6, 1.2, 1.5]);
+
+/* ────────────────────────────────────────
+   5. WALL CALENDAR  →  Schedule
+──────────────────────────────────────── */
+const calGroup = new THREE.Group();
+// Calendar backing
+calGroup.add(makeBox(1.05, 1.4, 0.025, new THREE.MeshStandardMaterial({color:0xe8e0c8, roughness:0.95}), 0, 0, 0));
+// Header strip (red)
+calGroup.add(makeBox(1.05, 0.22, 0.03, MAT.red, 0, 0.59, 0));
+// Grid lines (horizontal)
+[0.25, 0.05, -0.15, -0.35, -0.55].forEach(y => {
+  calGroup.add(makeBox(0.9, 0.005, 0.02, new THREE.MeshStandardMaterial({color:0xbbbbaa}), 0, y, 0.015));
+});
+// Grid lines (vertical)
+[-0.3, -0.15, 0, 0.15, 0.3].forEach(x => {
+  calGroup.add(makeBox(0.005, 0.9, 0.02, new THREE.MeshStandardMaterial({color:0xbbbbaa}), x, -0.05, 0.015));
+});
+// Red circle (highlighted date)
+const redCircleMat = new THREE.MeshStandardMaterial({color:0xFF2200, emissive:0xFF2200, emissiveIntensity:0.3});
+const redCircle = new THREE.Mesh(new THREE.CircleGeometry(0.055, 16), redCircleMat);
+redCircle.position.set(0, -0.35, 0.04);
+calGroup.add(redCircle);
+// Hanging pin
+calGroup.add(makeBox(0.015, 0.12, 0.015, MAT.metal, 0, 0.75, 0));
+calGroup.position.set(3, 2.7, -3.97);
+scene.add(calGroup);
+registerObject(calGroup, 'schedule', 'SCHEDULE', [3, 2.7, 0.5], [3, 2.7, -4]);
+
+/* ────────────────────────────────────────
+   6. FILING CABINET  →  Archive
+──────────────────────────────────────── */
+const cabinetGroup = new THREE.Group();
+// Main body
+cabinetGroup.add(makeBox(0.75, 1.65, 0.58, MAT.cabinet, 0, 0, 0));
+// Drawer fronts
+[-0.55, -0.18, 0.18, 0.55].forEach((y, i) => {
+  const drawerMat = new THREE.MeshStandardMaterial({color: i===0? 0x2d2d2d:0x232323, roughness:0.6, metalness:0.4});
+  cabinetGroup.add(makeBox(0.66, 0.35, 0.02, drawerMat, 0, y, 0.295));
+  // Handle
+  const handleMat = new THREE.MeshStandardMaterial({color:0x888888, roughness:0.3, metalness:0.9});
+  cabinetGroup.add(makeBox(0.22, 0.025, 0.025, handleMat, 0, y, 0.31));
+  // Label holder
+  cabinetGroup.add(makeBox(0.12, 0.05, 0.01, new THREE.MeshStandardMaterial({color:0xeeeedd}), -0.1, y-0.1, 0.31));
+});
+cabinetGroup.position.set(-4.8, 0.825, 0.5);
+scene.add(cabinetGroup);
+registerObject(cabinetGroup, 'archive', 'ARCHIVE', [-4.8, 1.5, 2], [-4.8, 0.8, 0]);
+
+/* ────────────────────────────────────────
+   PROPS (non-interactive atmosphere)
+──────────────────────────────────────── */
+// Cassette tapes stack on desk
+[0, 1, 2].forEach(i => {
+  const cassMat = new THREE.MeshStandardMaterial({color:[0x1a1a1a,0xFF2200,0x2a2a2a][i], roughness:0.8});
+  scene.add(makeBox(0.12, 0.025, 0.08, cassMat, 1.5+i*0.02, 1.165+i*0.025, 2+i*0.03));
+});
+
+// Coffee mug
+const mugGroup = new THREE.Group();
+const mugBody = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.048, 0.1, 12), new THREE.MeshStandardMaterial({color:0x1a1a1a, roughness:0.7}));
+mugGroup.add(mugBody);
+const mugCurve = new THREE.Mesh(new THREE.TorusGeometry(0.042, 0.01, 6, 12, Math.PI), new THREE.MeshStandardMaterial({color:0x1a1a1a}));
+mugCurve.rotation.y = Math.PI/2; mugCurve.position.set(0.055, 0, 0);
+mugGroup.add(mugCurve);
+mugGroup.position.set(0.9, 1.16, 2.2);
+scene.add(mugGroup);
+
+// Lamp on desk
+const lampGroup = new THREE.Group();
+lampGroup.add(makeBox(0.18, 0.015, 0.18, MAT.metal, 0, 0, 0));      // base
+lampGroup.add(makeBox(0.02, 0.65, 0.02, MAT.metal, 0, 0.33, 0));     // pole
+lampGroup.add(makeBox(0.22, 0.08, 0.22, new THREE.MeshStandardMaterial({color:0xFF8C00, roughness:0.4, emissive:0xFF8C00, emissiveIntensity:0.6}), 0, 0.69, 0));
+lampGroup.position.set(2.8, 1.11, 2);
+scene.add(lampGroup);
+
+// ON-AIR sign on wall
+const onAirGroup = new THREE.Group();
+const onAirBg = makeBox(0.65, 0.2, 0.04, new THREE.MeshStandardMaterial({color:0xFF2200, emissive:0xFF2200, emissiveIntensity:0.8}), 0, 0, 0);
+onAirGroup.add(onAirBg);
+onAirGroup.position.set(-3.5, 3.2, -3.97);
+scene.add(onAirGroup);
+
+/* ────────────────────────────────────────
+   EXTRA PROPS — studio fill
+──────────────────────────────────────── */
+
+// ── STUDIO MONITOR (left) ── x=-3.4
+{
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:0.65, metalness:0.15});
+  g.add(makeBox(0.24, 0.33, 0.26, bodyMat, 0, 0, 0));
+  // woofer
+  const woofer = new THREE.Mesh(new THREE.CircleGeometry(0.095, 20), new THREE.MeshStandardMaterial({color:0x2a2a2a, roughness:0.9, metalness:0.3}));
+  woofer.position.set(0, -0.02, 0.135); g.add(woofer);
+  // tweeter
+  const tweeter = new THREE.Mesh(new THREE.CircleGeometry(0.028, 12), new THREE.MeshStandardMaterial({color:0x888888, roughness:0.3, metalness:0.8}));
+  tweeter.position.set(0, 0.12, 0.135); g.add(tweeter);
+  // bass port
+  g.add(makeBox(0.16, 0.022, 0.01, new THREE.MeshStandardMaterial({color:0x060606}), 0, -0.13, 0.135));
+  // status led
+  const ledMat = new THREE.MeshStandardMaterial({color:0x00ff44, emissive:0x00ff44, emissiveIntensity:1});
+  const led = new THREE.Mesh(new THREE.CircleGeometry(0.007, 8), ledMat);
+  led.position.set(0.09, -0.13, 0.137); g.add(led);
+  g.position.set(-3.4, 1.32, 1.87); g.rotation.y = 0.28;
+  scene.add(g);
+}
+
+// ── STUDIO MONITOR (right) ── x=3.4
+{
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:0.65, metalness:0.15});
+  g.add(makeBox(0.24, 0.33, 0.26, bodyMat, 0, 0, 0));
+  const woofer = new THREE.Mesh(new THREE.CircleGeometry(0.095, 20), new THREE.MeshStandardMaterial({color:0x2a2a2a, roughness:0.9, metalness:0.3}));
+  woofer.position.set(0, -0.02, 0.135); g.add(woofer);
+  const tweeter = new THREE.Mesh(new THREE.CircleGeometry(0.028, 12), new THREE.MeshStandardMaterial({color:0x888888, roughness:0.3, metalness:0.8}));
+  tweeter.position.set(0, 0.12, 0.135); g.add(tweeter);
+  g.add(makeBox(0.16, 0.022, 0.01, new THREE.MeshStandardMaterial({color:0x060606}), 0, -0.13, 0.135));
+  const ledMat = new THREE.MeshStandardMaterial({color:0x00ff44, emissive:0x00ff44, emissiveIntensity:1});
+  const led = new THREE.Mesh(new THREE.CircleGeometry(0.007, 8), ledMat);
+  led.position.set(0.09, -0.13, 0.137); g.add(led);
+  g.position.set(3.4, 1.32, 1.87); g.rotation.y = -0.28;
+  scene.add(g);
+}
+
+// ── MICROPHONE ON STAND ──
+{
+  const g = new THREE.Group();
+  // Base
+  g.add(makeBox(0.22, 0.025, 0.22, MAT.metal, 0, 0, 0));
+  // Pole
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.58, 10), MAT.metal);
+  pole.position.set(0, 0.315, 0); g.add(pole);
+  // Boom arm
+  const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.36, 8), MAT.metal);
+  arm.rotation.z = Math.PI / 2; arm.position.set(0.18, 0.58, 0); g.add(arm);
+  // Mic body (capsule)
+  const micBody = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.18, 12), new THREE.MeshStandardMaterial({color:0xc0c0c0, roughness:0.25, metalness:0.95}));
+  micBody.position.set(0.37, 0.58, 0); micBody.rotation.z = Math.PI / 2; g.add(micBody);
+  // Windscreen (dark mesh look)
+  const wsMat = new THREE.MeshStandardMaterial({color:0x222222, roughness:0.95, metalness:0.05, wireframe:false});
+  const ws = new THREE.Mesh(new THREE.SphereGeometry(0.048, 8, 6, 0, Math.PI*2, 0, Math.PI*0.7), wsMat);
+  ws.position.set(0.37, 0.58, 0); ws.rotation.z = Math.PI / 2; g.add(ws);
+  // XLR cable (thin line)
+  const cablePts = [new THREE.Vector3(0.37,0.58,0), new THREE.Vector3(0.37,0.58,0.15), new THREE.Vector3(0,0.3,0.15)];
+  const cable = new THREE.Line(new THREE.BufferGeometry().setFromPoints(cablePts), new THREE.LineBasicMaterial({color:0x111111}));
+  g.add(cable);
+  g.position.set(-1.3, 1.16, 1.78);
+  scene.add(g);
+}
+
+// ── MIXING BOARD / CONSOLE ──
+{
+  const g = new THREE.Group();
+  const consoleMat = new THREE.MeshStandardMaterial({color:0x181818, roughness:0.55, metalness:0.35});
+  // Main body
+  g.add(makeBox(2.6, 0.09, 0.88, consoleMat, 0, 0, 0));
+  // Angled top surface
+  g.add(makeBox(2.6, 0.06, 0.62, new THREE.MeshStandardMaterial({color:0x202020, roughness:0.45, metalness:0.4}), 0, 0.072, -0.08, 0.18, 0, 0));
+  // Channel faders (8 channels)
+  for (let i = 0; i < 8; i++) {
+    const tx = -1.12 + i * 0.32;
+    g.add(makeBox(0.018, 0.01, 0.28, new THREE.MeshStandardMaterial({color:0x2a2a2a, roughness:0.6}), tx, 0.075, -0.04));
+    // Fader cap
+    g.add(makeBox(0.038, 0.032, 0.045, new THREE.MeshStandardMaterial({color:0xaaaaaa, roughness:0.25, metalness:0.75}), tx, 0.095, 0.02 + (i%3)*0.06));
+  }
+  // Knobs row (8 knobs)
+  for (let i = 0; i < 8; i++) {
+    const kx = -1.12 + i * 0.32;
+    const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.026, 10), new THREE.MeshStandardMaterial({color:0x888888, roughness:0.3, metalness:0.7}));
+    knob.position.set(kx, 0.098, -0.26); g.add(knob);
+  }
+  // Master fader (yellow, larger)
+  g.add(makeBox(0.05, 0.04, 0.055, new THREE.MeshStandardMaterial({color:0xF5E642, roughness:0.3, metalness:0.3, emissive:0xF5E642, emissiveIntensity:0.15}), 1.15, 0.1, -0.05));
+  // VU meter strips
+  for (let i = 0; i < 5; i++) {
+    const vuMat = new THREE.MeshStandardMaterial({color:0x2a7a2a, emissive:0x2a7a2a, emissiveIntensity:0.5});
+    g.add(makeBox(0.03, 0.1+i*0.01, 0.01, vuMat, 0.6+i*0.07, 0.09, -0.36));
+  }
+  // EQ section labels (colored dots row)
+  ['#F5E642','#FF8C00','#FF2200'].forEach((col, i) => {
+    const dot = new THREE.Mesh(new THREE.CircleGeometry(0.012, 8), new THREE.MeshStandardMaterial({color:parseInt(col.replace('#','0x')), emissive:parseInt(col.replace('#','0x')), emissiveIntensity:0.4}));
+    dot.position.set(-1.0+i*0.06, 0.095, -0.36); dot.rotation.x = -Math.PI/2; g.add(dot);
+  });
+  g.position.set(0.1, 1.195, 1.73);
+  scene.add(g);
+}
+
+// ── HEADPHONES on desk ──
+{
+  const g = new THREE.Group();
+  const hpMat = new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:0.65, metalness:0.35});
+  // Headband arc
+  const band = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.013, 8, 18, Math.PI), hpMat);
+  band.rotation.x = Math.PI / 2; g.add(band);
+  // Ear cups
+  [-1,1].forEach(side => {
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.038, 14), hpMat);
+    cup.position.set(side * 0.1, 0, 0); cup.rotation.z = Math.PI / 2; g.add(cup);
+    const pad = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.013, 6, 14), new THREE.MeshStandardMaterial({color:0x0d0d0d, roughness:0.95}));
+    pad.position.set(side * 0.1, 0, 0.022); pad.rotation.y = Math.PI / 2; g.add(pad);
+    // Yellow accent ring
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.004, 4, 14), new THREE.MeshStandardMaterial({color:0xF5E642, emissive:0xF5E642, emissiveIntensity:0.1}));
+    ring.position.set(side * 0.1, 0, -0.016); ring.rotation.y = Math.PI / 2; g.add(ring);
+  });
+  // Cable
+  const cPts = [new THREE.Vector3(-0.1,0,0.022), new THREE.Vector3(-0.1,-0.06,0.1), new THREE.Vector3(-0.12,-0.06,0.18)];
+  g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(cPts), new THREE.LineBasicMaterial({color:0x222222})));
+  g.rotation.x = 0.3; g.position.set(1.6, 1.19, 1.92);
+  scene.add(g);
+}
+
+// ── BOOKSHELF (right wall) ──
+{
+  const g = new THREE.Group();
+  const shelfWoodMat = new THREE.MeshStandardMaterial({color:0x2e1a08, roughness:0.8, metalness:0.0});
+  // Sides + back
+  g.add(makeBox(0.28, 2.6, 0.02, shelfWoodMat, 0, 0, -0.55));  // back
+  g.add(makeBox(0.28, 2.6, 0.06, shelfWoodMat, 0, 0, 0.58));   // front lip (thin)
+  g.add(makeBox(0.04, 2.6, 1.15, shelfWoodMat, -0.16, 0, 0));  // left side
+  g.add(makeBox(0.04, 2.6, 1.15, shelfWoodMat, 0.16, 0, 0));   // right side
+  // Shelves
+  [-1.1, -0.35, 0.4, 1.15].forEach(y => {
+    g.add(makeBox(0.3, 0.04, 1.1, shelfWoodMat, 0, y, 0));
+  });
+  // Books on bottom shelf
+  const bookColors = [0x8B0000, 0x1a3a6a, 0x2a5a22, 0x8B6010, 0xcc6600, 0x4a1a4a, 0x2a4a5a];
+  bookColors.forEach((col, i) => {
+    const bMat = new THREE.MeshStandardMaterial({color:col, roughness:0.9});
+    g.add(makeBox(0.26, 0.18+i*0.02, 0.06, bMat, 0, -1.1+0.1+i*0.01, -0.45+i*0.12));
+  });
+  // Vinyl records on middle shelf (stacked sideways)
+  for (let i=0; i<5; i++) {
+    const vinyl = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.145, 0.01, 20), new THREE.MeshStandardMaterial({color:0x0c0c0c, roughness:0.3, metalness:0.2}));
+    vinyl.rotation.x = Math.PI / 2; vinyl.position.set(0, -0.35, -0.35+i*0.14); g.add(vinyl);
+    const label = new THREE.Mesh(new THREE.CircleGeometry(0.04, 12), new THREE.MeshStandardMaterial({color:[0xF5E642,0xFF2200,0xffffff,0xFF8C00,0xF5E642][i], roughness:0.8}));
+    label.position.set(0, -0.35, -0.35+i*0.14-0.006); label.rotation.x = Math.PI/2; g.add(label);
+  }
+  // Reel-to-reel box on top shelf
+  g.add(makeBox(0.24, 0.16, 0.2, new THREE.MeshStandardMaterial({color:0x1a1a1a, roughness:0.7}), 0, 1.15, 0));
+  g.position.set(5.55, 1.3, -2.0); g.rotation.y = Math.PI / 2;
+  scene.add(g);
+}
+
+// ── FLOOR PLANT (left corner, catches window light) ──
+{
+  const g = new THREE.Group();
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.38, 14), new THREE.MeshStandardMaterial({color:0x6a4820, roughness:0.9}));
+  g.add(pot);
+  const soil = new THREE.Mesh(new THREE.CircleGeometry(0.18, 14), new THREE.MeshStandardMaterial({color:0x1a0e04, roughness:1}));
+  soil.rotation.x = -Math.PI/2; soil.position.y = 0.19; g.add(soil);
+  // Leaves — clustered spheres scaled to leaf shapes
+  [[0,0.5,0,1,1.4,0.7],[-.22,0.42,.1,0.85,1.2,0.65],[.2,0.46,-.1,0.9,1.3,0.7],[0,0.35,.22,0.8,1.1,0.6],[-.1,0.65,-.08,0.7,1.5,0.6]].forEach(([x,y,z,sx,sy,sz]) => {
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.19,7,5), new THREE.MeshStandardMaterial({color:0x2a5a1e, roughness:0.95}));
+    leaf.position.set(x,y,z); leaf.scale.set(sx,sy,sz); g.add(leaf);
+  });
+  g.position.set(-5.1, 0.19, -3.1);
+  scene.add(g);
+}
+
+// ── ROLLING CHAIR (visible behind desk) ──
+{
+  const g = new THREE.Group();
+  // Seat
+  g.add(makeBox(0.6, 0.08, 0.58, new THREE.MeshStandardMaterial({color:0x1a1a1a, roughness:0.85}), 0, 0, 0));
+  // Back
+  g.add(makeBox(0.58, 0.62, 0.06, new THREE.MeshStandardMaterial({color:0x1a1a1a, roughness:0.85}), 0, 0.35, -0.29));
+  // Center column
+  const col = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.6, 10), MAT.metal);
+  col.position.set(0, -0.34, 0); g.add(col);
+  // Caster base
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.32, 0.04, 5), MAT.metal);
+  base.position.set(0, -0.64, 0); g.add(base);
+  // Headrest
+  g.add(makeBox(0.42, 0.22, 0.06, new THREE.MeshStandardMaterial({color:0x151515, roughness:0.85}), 0, 0.7, -0.29));
+  g.position.set(0.4, 1.05, 3.4);
+  scene.add(g);
+}
+
+// ── EXTRA DESK CLUTTER ──
+// Stack of papers / scripts
+{
+  [0,1,2].forEach(i => {
+    const pMat = new THREE.MeshStandardMaterial({color:0xddd8c0-i*0x050500, roughness:0.95});
+    scene.add(makeBox(0.38, 0.008, 0.28, pMat, -2.8+i*0.01, 1.195+i*0.008, 1.72+i*0.005));
+  });
+}
+// Pencil holder + pencils
+{
+  const holderBody = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.11, 10), new THREE.MeshStandardMaterial({color:0x8B6010, roughness:0.7}));
+  holderBody.position.set(0.5, 1.215, 2.25); scene.add(holderBody);
+  for (let i = 0; i < 5; i++) {
+    const angle = (i / 5) * Math.PI * 2;
+    const pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.22, 6), new THREE.MeshStandardMaterial({color:[0xF5E642,0xFF8C00,0xcc2200,0xddddcc,0x88bbdd][i], roughness:0.7}));
+    pencil.position.set(0.5 + Math.cos(angle)*0.025, 1.28, 2.25 + Math.sin(angle)*0.025);
+    scene.add(pencil);
+  }
+}
+// Ashtray / coaster near mug
+scene.add(makeBox(0.1, 0.012, 0.1, new THREE.MeshStandardMaterial({color:0x888880, roughness:0.4, metalness:0.6}), 0.95, 1.162, 2.28));
+
+/* ────────────────────────────────────────
+   LIGHTING
+──────────────────────────────────────── */
+// Ambient — warm base fill, visible enough to see all surfaces
+scene.add(new THREE.AmbientLight(0x3a2010, 0.7));
+
+// ── WINDOW SUNLIGHT (key light, casts hard shadows across room)
+const windowSpot = new THREE.SpotLight(0xfff5c8, 8, 22, Math.PI / 5, 0.18, 1.4);
+windowSpot.position.set(-5.1, 4.35, -1.5);
+windowSpot.target.position.set(3, 0, 1.5);
+windowSpot.castShadow = true;
+windowSpot.shadow.mapSize.set(2048, 2048);
+windowSpot.shadow.camera.near = 0.5;
+windowSpot.shadow.camera.far = 22;
+windowSpot.shadow.bias = -0.001;
+scene.add(windowSpot);
+scene.add(windowSpot.target);
+
+// Window RectAreaLight — soft daylight fill from the window plane
+const windowRect = new THREE.RectAreaLight(0xfff0c0, 10, 2.4, 1.9);
+windowRect.position.set(-5.4, 4.35, -1.5);
+windowRect.rotation.y = -Math.PI / 2;
+scene.add(windowRect);
+
+// Secondary window bounce — warm light scattering off left wall
+const windowBounce = new THREE.PointLight(0xffe8a0, 2.5, 8);
+windowBounce.position.set(-4.5, 3.5, -1);
+scene.add(windowBounce);
+
+// ── DESK LAMP — warm amber pool on desk
+const deskLamp = new THREE.PointLight(0xFF8C00, 5.5, 10);
+deskLamp.position.set(2.8, 1.85, 2);
+deskLamp.castShadow = true;
+deskLamp.shadow.mapSize.set(512, 512);
+scene.add(deskLamp);
+
+// ── ON-AIR spot — yellow accent beam
+const onAirSpot = new THREE.SpotLight(0xF5E642, 3.5, 9, Math.PI / 7, 0.25);
+onAirSpot.position.set(-3.5, 4.5, -1);
+onAirSpot.target.position.set(-3.5, 0, 0);
+scene.add(onAirSpot);
+scene.add(onAirSpot.target);
+
+// ── Overhead ceiling strip — warm fill from above
+const rectLight = new THREE.RectAreaLight(0xfff0d0, 3, 8, 1.5);
+rectLight.position.set(0, 6.8, 0);
+rectLight.lookAt(0, 0, 0);
+scene.add(rectLight);
+
+// ── Subtle cool rim from back — separates objects from background
+const rimLight = new THREE.DirectionalLight(0x334466, 0.12);
+rimLight.position.set(0, 5, -5);
+scene.add(rimLight);
+
+/* ────────────────────────────────────────
+   RAYCASTER + MOUSE
+──────────────────────────────────────── */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let lastHovered = null;
+const tooltip = document.getElementById('tooltip');
+
+function getIntersects(event) {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const allMeshes = [];
+  interactables.forEach(g => g.traverse(c => { if(c.isMesh) allMeshes.push(c); }));
+  return raycaster.intersectObjects(allMeshes, false);
+}
+
+canvas.addEventListener('mousemove', e => {
+  if(state.activePanel) return;
+  const hits = getIntersects(e);
+  const topGroup = hits.length > 0 ? hits[0].object.userData.parentGroup : null;
+
+  if(topGroup !== lastHovered) {
+    // Un-glow previous
+    if(lastHovered) {
+      lastHovered.traverse(c => {
+        if(c.isMesh) { c.material = c.userData.origMat || c.material; }
+      });
+      lastHovered.userData.glowLight && (lastHovered.userData.glowLight.intensity = 0);
+    }
+    // Glow new
+    if(topGroup) {
+      topGroup.traverse(c => {
+        if(c.isMesh && !c.userData.origMat) {
+          c.userData.origMat = c.material;
+          const hovered = c.material.clone();
+          hovered.emissive = new THREE.Color(0xF5E642);
+          hovered.emissiveIntensity = 0.2;
+          c.material = hovered;
+        }
+      });
+      if(topGroup.userData.glowLight) topGroup.userData.glowLight.intensity = 1.5;
+      canvas.style.cursor = 'pointer';
+      tooltip.textContent = topGroup.userData.label;
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top  = (e.clientY - 28) + 'px';
+      tooltip.style.opacity = '1';
+      tooltip.setAttribute('aria-hidden','false');
+    } else {
+      canvas.style.cursor = 'default';
+      tooltip.style.opacity = '0';
+      tooltip.setAttribute('aria-hidden','true');
+    }
+    lastHovered = topGroup;
+  } else if(topGroup) {
+    tooltip.style.left = (e.clientX + 14) + 'px';
+    tooltip.style.top  = (e.clientY - 28) + 'px';
+  }
+});
+
+// Document-level mouse tracking for camera parallax
+document.addEventListener('mousemove', e => {
+  parallax.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+  parallax.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+canvas.addEventListener('click', e => {
+  const hits = getIntersects(e);
+  if(hits.length > 0) {
+    const panelId = hits[0].object.userData.panelId;
+    const group = hits[0].object.userData.parentGroup;
+    if(panelId && group) {
+      moveCameraTo(group.userData.camPos, group.userData.camLook);
+      setTimeout(() => openPanel(panelId), 400);
+    }
+  }
+});
+
+// Keyboard on canvas
+canvas.addEventListener('keydown', e => {
+  if(e.key==='Escape') closePanel();
+});
+
+/* ────────────────────────────────────────
+   CAMERA LERP
+──────────────────────────────────────── */
+const camLookTarget = new THREE.Vector3(0, 1.2, 0);
+
+function moveCameraTo(pos, look) {
+  state.cameraTarget.pos.copy(pos);
+  state.cameraTarget.look.copy(look);
+}
+
+function resetCamera() {
+  state.cameraTarget.pos.copy(state.cameraDefault.pos);
+  state.cameraTarget.look.copy(state.cameraDefault.look);
+}
+
+/* ────────────────────────────────────────
+   PANEL MANAGEMENT
+──────────────────────────────────────── */
+window.openPanel = function(id) {
+  // Close existing
+  if(state.activePanel && state.activePanel !== id) closePanel();
+  const panel = document.getElementById('panel-' + id);
+  if(!panel) return;
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden','false');
+  document.getElementById('panel-backdrop').classList.add('show');
+  document.body.classList.add('panel-open');
+  state.activePanel = id;
+  // Focus first focusable
+  setTimeout(() => {
+    const btn = panel.querySelector('button, input, a[href]');
+    if(btn) btn.focus();
+  }, 360);
+};
+
+window.closePanel = function() {
+  if(!state.activePanel) return;
+  const panel = document.getElementById('panel-' + state.activePanel);
+  if(panel) {
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+  }
+  document.getElementById('panel-backdrop').classList.remove('show');
+  document.body.classList.remove('panel-open');
+  state.activePanel = null;
+  resetCamera();
+  canvas.focus();
+};
+
+// Backdrop click closes
+document.getElementById('panel-backdrop').addEventListener('click', closePanel);
+
+// HUD nav buttons
+document.querySelectorAll('.hud-btn[data-panel]').forEach(btn => {
+  btn.addEventListener('click', () => openPanel(btn.dataset.panel));
+});
+
+// Keyboard close on panels
+document.querySelectorAll('.panel').forEach(panel => {
+  panel.addEventListener('keydown', e => { if(e.key==='Escape') closePanel(); });
+});
+
+/* ────────────────────────────────────────
+   ANIMATION LOOP
+──────────────────────────────────────── */
+const clock = new THREE.Clock();
+const lerpSpeed = 3;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+  const t = state.reducedMotion ? 1 : Math.min(delta * lerpSpeed, 1);
+
+  // Camera smooth lerp toward target
+  camera.position.lerp(state.cameraTarget.pos, t);
+  camLookTarget.lerp(state.cameraTarget.look, t);
+
+  // Mouse parallax — gentle sway when not in a panel
+  if (!state.activePanel && !state.reducedMotion) {
+    parallax.x += (parallax.tx - parallax.x) * 0.035;
+    parallax.y += (parallax.ty - parallax.y) * 0.035;
+    camera.position.x += parallax.x * 0.28;
+    camera.position.y += parallax.y * 0.16;
+  }
+
+  camera.lookAt(camLookTarget);
+
+  // Animate radio dial glow
+  const elapsed = clock.elapsedTime;
+  const radioGlowLight = radioGroup.children.find(c => c.isLight);
+  if(radioGlowLight) radioGlowLight.intensity = 0.3 + Math.sin(elapsed * 2) * 0.1;
+
+  // Hover scale lerp on active group
+  interactables.forEach(g => {
+    const targetScale = (g === lastHovered && !state.activePanel) ? 1.025 : 1;
+    g.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), state.reducedMotion ? 1 : 0.12);
+  });
+
+  renderer.render(scene, camera);
+}
+
+/* ────────────────────────────────────────
+   ROOM LOAD SEQUENCE
+──────────────────────────────────────── */
+function startRoom() {
+  state.isReady = true;
+  setTimeout(() => {
+    canvas.classList.add('ready');
+  }, state.reducedMotion ? 0 : 80);
+  animate();
+}
+
+// Wait for fonts
+if(document.fonts) {
+  document.fonts.ready.then(startRoom);
+} else {
+  setTimeout(startRoom, 400);
+}
+
+/* ────────────────────────────────────────
+   RESIZE
+──────────────────────────────────────── */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+</script>
+</body>
+</html>
